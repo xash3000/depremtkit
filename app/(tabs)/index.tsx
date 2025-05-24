@@ -1,75 +1,292 @@
-import { Image } from 'expo-image';
-import { Platform, StyleSheet } from 'react-native';
+import { MaterialIcons } from '@expo/vector-icons';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useState } from 'react';
+import {
+  Alert,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
 import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
+import { Colors } from '@/constants/Colors';
+import { useColorScheme } from '@/hooks/useColorScheme';
+import { databaseService } from '@/services/database';
+import { dateUtils } from '@/services/utils';
+import { Item } from '@/types';
+import { AddItemModal } from '../../components/AddItemModal';
+import { ItemCard } from '../../components/ItemCard';
 
-export default function HomeScreen() {
+export default function MyBagScreen() {
+  const colorScheme = useColorScheme();
+  const [items, setItems] = useState<Item[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [refreshing, setRefreshing] = useState(false);
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [editingItem, setEditingItem] = useState<Item | null>(null);
+
+  const loadItems = async () => {
+    try {
+      const allItems = await databaseService.getAllItems();
+      setItems(allItems);
+    } catch (error) {
+      console.error('Error loading items:', error);
+      Alert.alert('Error', 'Failed to load items');
+    } finally {
+      setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      loadItems();
+    }, [])
+  );
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    loadItems();
+  };
+
+  const handleAddItem = async (itemData: Omit<Item, 'id' | 'createdAt' | 'updatedAt'>) => {
+    try {
+      await databaseService.addItem(itemData);
+      loadItems();
+      setShowAddModal(false);
+    } catch (error) {
+      console.error('Error adding item:', error);
+      Alert.alert('Error', 'Failed to add item');
+    }
+  };
+
+  const handleUpdateItem = async (id: number, updates: Partial<Item>) => {
+    try {
+      await databaseService.updateItem(id, updates);
+      loadItems();
+      setEditingItem(null);
+    } catch (error) {
+      console.error('Error updating item:', error);
+      Alert.alert('Error', 'Failed to update item');
+    }
+  };
+
+  const handleDeleteItem = async (id: number) => {
+    Alert.alert(
+      'Delete Item',
+      'Are you sure you want to remove this item from your bag?',
+      [
+        { text: 'Cancel', style: 'cancel' },
+        {
+          text: 'Delete',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await databaseService.deleteItem(id);
+              loadItems();
+            } catch (error) {
+              console.error('Error deleting item:', error);
+              Alert.alert('Error', 'Failed to delete item');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const toggleItemCheck = async (item: Item) => {
+    await handleUpdateItem(item.id!, { isChecked: !item.isChecked });
+  };
+
+  const getItemStats = () => {
+    const totalItems = items.length;
+    const checkedItems = items.filter(item => item.isChecked).length;
+    const expiringItems = items.filter(item => 
+      item.expirationDate && dateUtils.isExpiringSoon(item.expirationDate)
+    ).length;
+    
+    return { totalItems, checkedItems, expiringItems };
+  };
+
+  const stats = getItemStats();
+
+  const renderItem = ({ item }: { item: Item }) => (
+    <ItemCard
+      item={item}
+      onToggleCheck={() => toggleItemCheck(item)}
+      onEdit={() => setEditingItem(item)}
+      onDelete={() => handleDeleteItem(item.id!)}
+    />
+  );
+
+  const renderEmptyState = () => (
+    <View style={styles.emptyState}>
+      <MaterialIcons name="backpack" size={80} color={Colors[colorScheme ?? 'light'].tabIconDefault} />
+      <ThemedText style={styles.emptyTitle}>Your Emergency Bag is Empty</ThemedText>
+      <ThemedText style={styles.emptySubtitle}>
+        Start building your earthquake preparedness kit by adding essential items
+      </ThemedText>
+      <TouchableOpacity
+        style={[styles.addButton, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
+        onPress={() => setShowAddModal(true)}
+      >
+        <MaterialIcons name="add" size={24} color="white" />
+        <Text style={styles.addButtonText}>Add First Item</Text>
+      </TouchableOpacity>
+    </View>
+  );
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
+    <SafeAreaView style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
+      <ThemedView style={styles.header}>
+        <ThemedText style={styles.title}>My Emergency Bag</ThemedText>
+        <ThemedText style={styles.subtitle}>Stay Ready. Stay Safe.</ThemedText>
+        
+        <View style={styles.statsContainer}>
+          <View style={styles.statItem}>
+            <ThemedText style={styles.statNumber}>{stats.totalItems}</ThemedText>
+            <ThemedText style={styles.statLabel}>Total Items</ThemedText>
+          </View>
+          <View style={styles.statItem}>
+            <ThemedText style={[styles.statNumber, { color: '#4CAF50' }]}>{stats.checkedItems}</ThemedText>
+            <ThemedText style={styles.statLabel}>Checked</ThemedText>
+          </View>
+          <View style={styles.statItem}>
+            <ThemedText style={[styles.statNumber, { color: stats.expiringItems > 0 ? '#FF9800' : '#4CAF50' }]}>
+              {stats.expiringItems}
+            </ThemedText>
+            <ThemedText style={styles.statLabel}>Expiring Soon</ThemedText>
+          </View>
+        </View>
+      </ThemedView>
+
+      {items.length === 0 ? renderEmptyState() : (
+        <FlatList
+          data={items}
+          renderItem={renderItem}
+          keyExtractor={(item) => item.id!.toString()}
+          contentContainerStyle={styles.listContainer}
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+          showsVerticalScrollIndicator={false}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({
-              ios: 'cmd + d',
-              android: 'cmd + m',
-              web: 'F12',
-            })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          {`Tap the Explore tab to learn more about what's included in this starter app.`}
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          {`When you're ready, run `}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+      )}
+
+      {items.length > 0 && (
+        <TouchableOpacity
+          style={[styles.fab, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
+          onPress={() => setShowAddModal(true)}
+        >
+          <MaterialIcons name="add" size={28} color="white" />
+        </TouchableOpacity>
+      )}
+
+      <AddItemModal
+        visible={showAddModal || !!editingItem}
+        onClose={() => {
+          setShowAddModal(false);
+          setEditingItem(null);
+        }}
+        onSave={editingItem ? 
+          (itemData: Omit<Item, 'id' | 'createdAt' | 'updatedAt'>) => handleUpdateItem(editingItem.id!, itemData) : 
+          handleAddItem
+        }
+        editingItem={editingItem}
+      />
+    </SafeAreaView>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
   },
-  stepContainer: {
-    gap: 8,
+  header: {
+    padding: 20,
+    paddingBottom: 10,
+  },
+  title: {
+    fontSize: 28,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  subtitle: {
+    fontSize: 16,
+    opacity: 0.7,
+    marginBottom: 20,
+  },
+  statsContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-around',
+    backgroundColor: 'rgba(0, 0, 0, 0.05)',
+    borderRadius: 12,
+    padding: 16,
+  },
+  statItem: {
+    alignItems: 'center',
+  },
+  statNumber: {
+    fontSize: 24,
+    fontWeight: 'bold',
+  },
+  statLabel: {
+    fontSize: 12,
+    opacity: 0.7,
+    marginTop: 4,
+  },
+  listContainer: {
+    padding: 20,
+    paddingTop: 10,
+  },
+  emptyState: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    padding: 40,
+  },
+  emptyTitle: {
+    fontSize: 20,
+    fontWeight: 'bold',
+    marginTop: 20,
     marginBottom: 8,
   },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
+  emptySubtitle: {
+    fontSize: 16,
+    opacity: 0.7,
+    textAlign: 'center',
+    marginBottom: 30,
+    lineHeight: 22,
+  },
+  addButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 24,
+    paddingVertical: 12,
+    borderRadius: 25,
+  },
+  addButtonText: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: '600',
+    marginLeft: 8,
+  },
+  fab: {
     position: 'absolute',
+    bottom: 30,
+    right: 20,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    justifyContent: 'center',
+    alignItems: 'center',
+    elevation: 8,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
   },
 });
