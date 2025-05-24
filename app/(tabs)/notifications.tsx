@@ -4,13 +4,13 @@ import { Item } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    FlatList,
-    RefreshControl,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  FlatList,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function NotificationsScreen() {
@@ -41,12 +41,12 @@ export default function NotificationsScreen() {
 
   const handleDeleteItem = async (itemId: number) => {
     Alert.alert(
-      'Delete Item',
-      'Are you sure you want to delete this item?',
+      'Eşyayı Sil',
+      'Bu eşyayı silmek istediğin emin misin?',
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: 'İptal', style: 'cancel' },
         {
-          text: 'Delete',
+          text: 'Sil',
           style: 'destructive',
           onPress: async () => {
             try {
@@ -54,7 +54,7 @@ export default function NotificationsScreen() {
               await loadNotifications();
             } catch (error) {
               console.error('Error deleting item:', error);
-              Alert.alert('Error', 'Failed to delete item');
+              Alert.alert('Hata', 'Eşya silinemedi');
             }
           },
         },
@@ -102,21 +102,21 @@ export default function NotificationsScreen() {
           />
           <Text style={[styles.expirationText, { color: expStatus.color }]}>
             {expStatus.status === 'expired'
-              ? `Expired ${expStatus.days} day${expStatus.days === 1 ? '' : 's'} ago`
-              : `Expires in ${expStatus.days} day${expStatus.days === 1 ? '' : 's'}`}
+              ? `${expStatus.days} gün önce süresi doldu`
+              : `${expStatus.days} gün sonra süresi dolacak`}
           </Text>
         </View>
 
         <View style={styles.itemDetails}>
           <Text style={styles.detailText}>
-            Quantity: {item.quantity} {item.unit}
+            Miktar: {item.quantity} {item.unit}
           </Text>
           <Text style={styles.detailText}>
-            Expiration: {formatDate(item.expirationDate!)}
+            Son Kullanma: {formatDate(item.expirationDate!)}
           </Text>
           {item.notes && (
             <Text style={styles.detailText} numberOfLines={2}>
-              Notes: {item.notes}
+              Notlar: {item.notes}
             </Text>
           )}
         </View>
@@ -143,19 +143,19 @@ export default function NotificationsScreen() {
         }
         ListHeaderComponent={
           <View style={styles.header}>
-            <Text style={styles.title}>Alerts & Notifications</Text>
+            <Text style={styles.title}>Uyarılar ve Bildirimler</Text>
             <Text style={styles.subtitle}>
-              Items that need your attention
+              Dikkat gerektiren eşyalar
             </Text>
             
             {expiredItems.length > 0 && (
               <View style={styles.alertSection}>
                 <View style={styles.alertHeader}>
                   <Ionicons name="alert-circle" size={20} color="#FF3B30" />
-                  <Text style={styles.alertTitle}>Expired Items ({expiredItems.length})</Text>
+                  <Text style={styles.alertTitle}>Süresi Geçen Eşyalar ({expiredItems.length})</Text>
                 </View>
                 <Text style={styles.alertDescription}>
-                  These items have passed their expiration date and should be replaced immediately.
+                  Bu eşyaların son kullanma tarihi geçmiştir ve hemen değiştirilmelidir.
                 </Text>
               </View>
             )}
@@ -164,18 +164,18 @@ export default function NotificationsScreen() {
               <View style={styles.alertSection}>
                 <View style={styles.alertHeader}>
                   <Ionicons name="warning" size={20} color="#FF9500" />
-                  <Text style={styles.alertTitle}>Expiring Soon ({expiringSoonItems.length})</Text>
+                  <Text style={styles.alertTitle}>Yakında Bitecek ({expiringSoonItems.length})</Text>
                 </View>
                 <Text style={styles.alertDescription}>
-                  These items will expire within the next 30 days. Consider replacing them soon.
+                  Bu eşyaların süresi önümüzdeki 30 gün içinde dolacak. Yakında değiştirmeyi düşünün.
                 </Text>
               </View>
             )}
           </View>
         }
         ListEmptyComponent={renderEmptyState(
-          'All Good!',
-          'No items need immediate attention. Your emergency bag is up to date.',
+          'Her Şey Yolunda!',
+          'Hiçbir eşya acil dikkat gerektirmiyor. Acil durum çantan güncel.',
           'checkmark-circle'
         )}
         contentContainerStyle={

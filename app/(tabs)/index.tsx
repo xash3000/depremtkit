@@ -36,7 +36,7 @@ export default function MyBagScreen() {
       setItems(allItems);
     } catch (error) {
       console.error('Error loading items:', error);
-      Alert.alert('Error', 'Failed to load items');
+      Alert.alert('Hata', 'Eşyalar yüklenemedi');
     } finally {
       setLoading(false);
       setRefreshing(false);
@@ -61,7 +61,7 @@ export default function MyBagScreen() {
       setShowAddModal(false);
     } catch (error) {
       console.error('Error adding item:', error);
-      Alert.alert('Error', 'Failed to add item');
+      Alert.alert('Hata', 'Eşya eklenemedi');
     }
   };
 
@@ -72,18 +72,18 @@ export default function MyBagScreen() {
       setEditingItem(null);
     } catch (error) {
       console.error('Error updating item:', error);
-      Alert.alert('Error', 'Failed to update item');
+      Alert.alert('Hata', 'Eşya güncellenemedi');
     }
   };
 
   const handleDeleteItem = async (id: number) => {
     Alert.alert(
-      'Delete Item',
-      'Are you sure you want to remove this item from your bag?',
+      'Eşyayı Sil',
+      'Bu eşyayı çantandan kaldırmak istediğin emin misin?',
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: 'İptal', style: 'cancel' },
         {
-          text: 'Delete',
+          text: 'Sil',
           style: 'destructive',
           onPress: async () => {
             try {
@@ -91,7 +91,7 @@ export default function MyBagScreen() {
               loadItems();
             } catch (error) {
               console.error('Error deleting item:', error);
-              Alert.alert('Error', 'Failed to delete item');
+              Alert.alert('Hata', 'Eşya silinemedi');
             }
           },
         },
@@ -127,16 +127,16 @@ export default function MyBagScreen() {
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
       <MaterialIcons name="backpack" size={80} color={Colors[colorScheme ?? 'light'].tabIconDefault} />
-      <ThemedText style={styles.emptyTitle}>Your Emergency Bag is Empty</ThemedText>
+      <ThemedText style={styles.emptyTitle}>Acil Durum Çantan Boş</ThemedText>
       <ThemedText style={styles.emptySubtitle}>
-        Start building your earthquake preparedness kit by adding essential items
+        Temel eşyaları ekleyerek deprem hazırlık kitini oluşturmaya başla
       </ThemedText>
       <TouchableOpacity
         style={[styles.addButton, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
         onPress={() => setShowAddModal(true)}
       >
         <MaterialIcons name="add" size={24} color="white" />
-        <Text style={styles.addButtonText}>Add First Item</Text>
+        <Text style={styles.addButtonText}>İlk Eşyayı Ekle</Text>
       </TouchableOpacity>
     </View>
   );
@@ -144,23 +144,23 @@ export default function MyBagScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
       <ThemedView style={styles.header}>
-        <ThemedText style={styles.title}>My Emergency Bag</ThemedText>
-        <ThemedText style={styles.subtitle}>Stay Ready. Stay Safe.</ThemedText>
+        <ThemedText style={styles.title}>Acil Durum Çantam</ThemedText>
+        <ThemedText style={styles.subtitle}>Hazır Ol. Güvende Kal.</ThemedText>
         
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
             <ThemedText style={styles.statNumber}>{stats.totalItems}</ThemedText>
-            <ThemedText style={styles.statLabel}>Total Items</ThemedText>
+            <ThemedText style={styles.statLabel}>Toplam Eşya</ThemedText>
           </View>
           <View style={styles.statItem}>
             <ThemedText style={[styles.statNumber, { color: '#4CAF50' }]}>{stats.checkedItems}</ThemedText>
-            <ThemedText style={styles.statLabel}>Checked</ThemedText>
+            <ThemedText style={styles.statLabel}>Kontrol Edildi</ThemedText>
           </View>
           <View style={styles.statItem}>
             <ThemedText style={[styles.statNumber, { color: stats.expiringItems > 0 ? '#FF9800' : '#4CAF50' }]}>
               {stats.expiringItems}
             </ThemedText>
-            <ThemedText style={styles.statLabel}>Expiring Soon</ThemedText>
+            <ThemedText style={styles.statLabel}>Yakında Bitecek</ThemedText>
           </View>
         </View>
       </ThemedView>

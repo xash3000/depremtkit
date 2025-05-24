@@ -1,14 +1,14 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    Modal,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View
+  Alert,
+  Modal,
+  ScrollView,
+  StyleSheet,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  View
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -60,13 +60,13 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
 
   const handleSave = () => {
     if (!name.trim()) {
-      Alert.alert('Error', 'Please enter an item name');
+      Alert.alert('Hata', 'Lütfen bir eşya adı girin');
       return;
     }
 
     const quantityNum = parseInt(quantity) || 1;
     if (quantityNum <= 0) {
-      Alert.alert('Error', 'Quantity must be greater than 0');
+      Alert.alert('Hata', 'Miktar 0\'dan büyük olmalıdır');
       return;
     }
 
@@ -85,7 +85,7 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
 
   const renderCategorySelector = () => (
     <View style={styles.section}>
-      <ThemedText style={styles.label}>Category</ThemedText>
+      <ThemedText style={styles.label}>Kategori</ThemedText>
       <ScrollView 
         horizontal 
         showsHorizontalScrollIndicator={false}
@@ -144,16 +144,16 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
           }
         ]}>
           <TouchableOpacity onPress={onClose} style={styles.headerButton}>
-            <ThemedText style={styles.headerButtonText}>Cancel</ThemedText>
+            <ThemedText style={styles.headerButtonText}>İptal</ThemedText>
           </TouchableOpacity>
           
           <ThemedText style={styles.headerTitle}>
-            {editingItem ? 'Edit Item' : 'Add Item'}
+            {editingItem ? 'Eşyayı Düzenle' : 'Eşya Ekle'}
           </ThemedText>
           
           <TouchableOpacity onPress={handleSave} style={styles.headerButton}>
             <ThemedText style={[styles.headerButtonText, { color: Colors[colorScheme ?? 'light'].tint }]}>
-              Save
+              Kaydet
             </ThemedText>
           </TouchableOpacity>
         </View>
@@ -161,7 +161,7 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
         <ScrollView style={styles.content} showsVerticalScrollIndicator={false}>
           {/* Name Input */}
           <View style={styles.section}>
-            <ThemedText style={styles.label}>Item Name *</ThemedText>
+            <ThemedText style={styles.label}>Eşya Adı *</ThemedText>
             <TextInput
               style={[
                 styles.input,
@@ -173,7 +173,7 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
               ]}
               value={name}
               onChangeText={setName}
-              placeholder="e.g., Water bottles, First aid kit"
+              placeholder="örn. Su şişesi, yara bandı"
               placeholderTextColor={isDark ? '#8E8E93' : '#8E8E93'}
               autoFocus
             />
@@ -184,7 +184,7 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
 
           {/* Quantity Input */}
           <View style={styles.section}>
-            <ThemedText style={styles.label}>Quantity</ThemedText>
+            <ThemedText style={styles.label}>Miktar</ThemedText>
             <View style={styles.quantityContainer}>
               <TouchableOpacity
                 style={[
@@ -237,34 +237,38 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
 
           {/* Unit */}
           <View style={styles.section}>
-            <ThemedText style={styles.label}>Unit</ThemedText>
+            <ThemedText style={styles.label}>Birim</ThemedText>
             <View style={styles.unitContainer}>
-              {['pcs', 'kg', 'L', 'pack', 'box', 'bottle'].map((unitOption) => (
+            {['adet', 'kg', 'L', 'paket', 'kutu', 'şişe'].map((unitOption, index) => {
+              const originalUnits = ['pcs', 'kg', 'L', 'pack', 'box', 'bottle'];
+              const originalUnit = originalUnits[index];
+              return (
                 <TouchableOpacity
-                  key={unitOption}
+                  key={originalUnit}
                   style={[
                     styles.unitOption,
                     {
-                      backgroundColor: unit === unitOption ? '#007AFF' : (isDark ? '#2C2C2E' : '#FFF'),
-                      borderColor: unit === unitOption ? '#007AFF' : (isDark ? '#3C3C3E' : '#E1E1E1'),
+                      backgroundColor: unit === originalUnit ? '#007AFF' : (isDark ? '#2C2C2E' : '#FFF'),
+                      borderColor: unit === originalUnit ? '#007AFF' : (isDark ? '#3C3C3E' : '#E1E1E1'),
                     }
                   ]}
-                  onPress={() => setUnit(unitOption)}
+                  onPress={() => setUnit(originalUnit)}
                 >
                   <ThemedText style={[
                     styles.unitText,
-                    { color: unit === unitOption ? '#FFF' : (isDark ? '#FFF' : '#000') }
+                    { color: unit === originalUnit ? '#FFF' : (isDark ? '#FFF' : '#000') }
                   ]}>
                     {unitOption}
                   </ThemedText>
                 </TouchableOpacity>
-              ))}
+              );
+            })}
             </View>
           </View>
 
           {/* Expiration Date */}
           <View style={styles.section}>
-            <ThemedText style={styles.label}>Expiration Date (Optional)</ThemedText>
+            <ThemedText style={styles.label}>Son Kullanma Tarihi (İsteğe Bağlı)</ThemedText>
             <TextInput
               style={[
                 styles.input,
@@ -283,7 +287,7 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
 
           {/* Notes */}
           <View style={styles.section}>
-            <ThemedText style={styles.label}>Notes (Optional)</ThemedText>
+            <ThemedText style={styles.label}>Notlar (İsteğe Bağlı)</ThemedText>
             <TextInput
               style={[
                 styles.textArea,
@@ -295,7 +299,7 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
               ]}
               value={notes}
               onChangeText={setNotes}
-              placeholder="Additional notes about this item..."
+              placeholder="Bu eşya hakkında ek notlar..."
               placeholderTextColor={isDark ? '#8E8E93' : '#8E8E93'}
               multiline
               numberOfLines={3}
@@ -320,7 +324,7 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
                   <MaterialIcons name="check" size={16} color="white" />
                 )}
               </View>
-              <ThemedText style={styles.checkboxLabel}>Mark as checked</ThemedText>
+              <ThemedText style={styles.checkboxLabel}>Kontrol edildi olarak işaretle</ThemedText>
             </TouchableOpacity>
           </View>
         </ScrollView>

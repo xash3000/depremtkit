@@ -1,10 +1,10 @@
 import { MaterialIcons } from '@expo/vector-icons';
 import React from 'react';
 import {
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View
 } from 'react-native';
 
 import { ThemedText } from '@/components/ThemedText';
@@ -32,11 +32,11 @@ export function ItemCard({ item, onToggleCheck, onEdit, onDelete }: ItemCardProp
     const daysUntil = dateUtils.getDaysUntilExpiration(item.expirationDate);
     
     if (dateUtils.isExpired(item.expirationDate)) {
-      return { text: 'Expired', color: '#F44336', urgent: true };
+      return { text: 'Süresi Doldu', color: '#F44336', urgent: true };
     } else if (dateUtils.isExpiringSoon(item.expirationDate, 7)) {
-      return { text: `${daysUntil} days left`, color: '#FF9800', urgent: true };
+      return { text: `${daysUntil} gün kaldı`, color: '#FF9800', urgent: true };
     } else if (dateUtils.isExpiringSoon(item.expirationDate, 30)) {
-      return { text: `${daysUntil} days left`, color: '#FFC107', urgent: false };
+      return { text: `${daysUntil} gün kaldı`, color: '#FFC107', urgent: false };
     }
     
     return { text: dateUtils.formatDate(item.expirationDate), color: '#4CAF50', urgent: false };
@@ -123,7 +123,7 @@ export function ItemCard({ item, onToggleCheck, onEdit, onDelete }: ItemCardProp
             color={isDark ? '#A0A0A0' : '#666'} 
           />
           <ThemedText style={styles.quantity}>
-            Quantity: {item.quantity}
+            Miktar: {item.quantity}
           </ThemedText>
         </View>
         

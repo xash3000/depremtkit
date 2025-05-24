@@ -29,21 +29,21 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: 'My Bag',
+          title: 'Çantam',
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="backpack" color={color} />,
         }}
       />
       <Tabs.Screen
         name="explore"
         options={{
-          title: 'Categories',
+          title: 'Kategoriler',
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="grid-view" color={color} />,
         }}
       />
       <Tabs.Screen
         name="notifications"
         options={{
-          title: 'Alerts',
+          title: 'Uyarılar',
           tabBarIcon: ({ color }) => <MaterialIcons size={28} name="notifications" color={color} />,
         }}
       />

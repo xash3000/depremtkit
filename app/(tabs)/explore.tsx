@@ -125,10 +125,10 @@ export default function CategoriesScreen() {
         style={styles.emptyIcon}
       />
       <ThemedText style={styles.emptyTitle}>
-        No {selectedCategory.name} Items
+        {selectedCategory.name} Eşyası Yok
       </ThemedText>
       <ThemedText style={styles.emptySubtitle}>
-        Add items to this category to see them here
+        Bu kategoriye eşya ekleyerek burada görmek için
       </ThemedText>
       <TouchableOpacity
         style={[styles.addButton, { 
@@ -139,22 +139,22 @@ export default function CategoriesScreen() {
         onPress={() => setShowAddModal(true)}
       >
         <MaterialIcons name="add" size={24} color={selectedCategory.color} />
-        <Text style={[styles.addButtonText, { color: selectedCategory.color }]}>Add Item</Text>
+        <Text style={[styles.addButtonText, { color: selectedCategory.color }]}>Eşya Ekle</Text>
       </TouchableOpacity>
     </View>
   );
 
   const getRecommendations = (category: ItemCategory) => {
     const recommendations: { [key: string]: string[] } = {
-      water: ['Water bottles (1 gallon per person per day)', 'Water purification tablets', 'Portable water filter'],
-      food: ['Canned goods', 'Energy bars', 'Dried fruits and nuts', 'Baby food (if needed)'],
-      medical: ['First aid kit', 'Prescription medications', 'Pain relievers', 'Bandages', 'Antiseptic'],
-      tools: ['Flashlight', 'Battery-powered radio', 'Multi-tool', 'Matches/lighter', 'Duct tape'],
-      clothing: ['Extra clothes', 'Rain gear', 'Warm blankets', 'Sturdy shoes'],
-      documents: ['ID copies', 'Insurance papers', 'Cash', 'Emergency contact list'],
-      communication: ['Cell phone charger', 'Battery pack', 'Emergency radio', 'Whistle'],
-      hygiene: ['Toothbrush/toothpaste', 'Soap', 'Toilet paper', 'Feminine hygiene products'],
-      other: ['Garbage bags', 'Plastic sheeting', 'Local maps', 'Fire extinguisher'],
+      water: ['Su şişeleri (kişi başı günde 1 galon)', 'Su arıtma tabletleri', 'Taşınabilir su filtresi'],
+      food: ['Konserve gıdalar', 'Enerji barları', 'Kuru meyve ve kuruyemiş', 'Bebek maması (gerekirse)'],
+      medical: ['İlk yardım çantası', 'Reçeteli ilaçlar', 'Ağrı kesiciler', 'Bandaj', 'Antiseptik'],
+      tools: ['El feneri', 'Pilli radyo', 'Çok amaçlı alet', 'Kibrit/çakmak', 'Koli bandı'],
+      clothing: ['Yedek giysiler', 'Yağmurluk', 'Sıcak battaniye', 'Sağlam ayakkabı'],
+      documents: ['Kimlik kopyaları', 'Sigorta evrakları', 'Nakit para', 'Acil durum iletişim listesi'],
+      communication: ['Cep telefonu şarjı', 'Güç kaynağı', 'Acil durum radyosu', 'Düdük'],
+      hygiene: ['Diş fırçası/macunu', 'Sabun', 'Tuvalet kağıdı', 'Kadın hijyen ürünleri'],
+      other: ['Çöp torbaları', 'Plastik örtü', 'Yerel haritalar', 'Yangın söndürücü'],
     };
     
     return recommendations[category.id] || [];
@@ -165,8 +165,8 @@ export default function CategoriesScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
       <ThemedView style={styles.header}>
-        <ThemedText style={styles.title}>Categories</ThemedText>
-        <ThemedText style={styles.subtitle}>Organize your emergency supplies</ThemedText>
+        <ThemedText style={styles.title}>Kategoriler</ThemedText>
+        <ThemedText style={styles.subtitle}>Acil durum malzemelerini düzenle</ThemedText>
       </ThemedView>
 
       {/* Category Tabs */}
@@ -190,14 +190,14 @@ export default function CategoriesScreen() {
           />
           <ThemedText style={styles.categoryTitle}>{selectedCategory.name}</ThemedText>
           <View style={styles.itemCount}>
-            <ThemedText style={styles.itemCountText}>{items.length} items</ThemedText>
+            <ThemedText style={styles.itemCountText}>{items.length} eşya</ThemedText>
           </View>
         </View>
 
         {/* Recommendations */}
         {recommendations.length > 0 && (
           <View style={styles.recommendations}>
-            <ThemedText style={styles.recommendationsTitle}>Recommended Items:</ThemedText>
+            <ThemedText style={styles.recommendationsTitle}>Önerilen Eşyalar:</ThemedText>
             {recommendations.slice(0, 3).map((rec, index) => (
               <ThemedText key={index} style={styles.recommendationItem}>
                 • {rec}

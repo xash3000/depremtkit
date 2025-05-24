@@ -59,7 +59,7 @@ export const notificationService = {
 export const dateUtils = {
   formatDate(dateString: string): string {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
+    return date.toLocaleDateString('tr-TR', {
       year: 'numeric',
       month: 'short',
       day: 'numeric',
