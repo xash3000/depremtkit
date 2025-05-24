@@ -2,17 +2,18 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { databaseService } from '@/services/database';
-import { formatDate, translateUnit } from '@/services/utils';
+import { formatDate, notificationService, translateUnit } from '@/services/utils';
 import { Item } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import {
-  Alert,
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-  TouchableOpacity,
-  View,
+    Alert,
+    FlatList,
+    RefreshControl,
+    StyleSheet,
+    Switch,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 
 export default function NotificationsScreen() {
@@ -25,10 +26,53 @@ export default function NotificationsScreen() {
   const [expiredItems, setExpiredItems] = useState<Item[]>([]);
   const [expiringSoonItems, setExpiringSoonItems] = useState<Item[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
   useEffect(() => {
     loadNotifications();
+    checkNotificationStatus();
   }, []);
+
+  const checkNotificationStatus = async () => {
+    try {
+      // You can add logic here to check if notifications are currently scheduled
+      // For now, we'll assume they're enabled if the app has permission
+      const hasPermission = await notificationService.requestPermissions();
+      setNotificationsEnabled(hasPermission);
+    } catch (error) {
+      console.error('Error checking notification status:', error);
+    }
+  };
+
+  const toggleNotifications = async (enabled: boolean) => {
+    try {
+      if (enabled) {
+        const success = await notificationService.initializeNotifications();
+        if (success) {
+          setNotificationsEnabled(true);
+          Alert.alert(
+            '✅ Bildirimler Aktifleştirildi',
+            'Aylık deprem çantası kontrol bildirimleri başlatıldı.'
+          );
+        } else {
+          Alert.alert(
+            'Hata',
+            'Bildirimler aktifleştirilemedi. Lütfen uygulama ayarlarından bildirim iznini kontrol edin.'
+          );
+        }
+      } else {
+        await notificationService.stopMonthlyCheck();
+        setNotificationsEnabled(false);
+        Alert.alert(
+          '🔕 Bildirimler Devre Dışı',
+          'Deprem çantası kontrol bildirimleri durduruldu.'
+        );
+      }
+    } catch (error) {
+      console.error('Error toggling notifications:', error);
+      Alert.alert('Hata', 'Bildirim ayarları değiştirilemedi.');
+    }
+  };
 
   const loadNotifications = async () => {
     try {
@@ -155,6 +199,27 @@ export default function NotificationsScreen() {
             <ThemedText style={[styles.subtitle, { color: iconColor }]}>
               Dikkat gerektiren eşyalar
             </ThemedText>
+            
+            {/* Notification Settings Section */}
+            <View style={[styles.settingsSection, { backgroundColor: alertBackgroundColor }]}>
+              <View style={styles.settingItem}>
+                <View style={styles.settingInfo}>
+                  <Ionicons name="notifications" size={20} color={iconColor} />
+                  <View style={styles.settingTextContainer}>
+                    <ThemedText style={styles.settingTitle}>Otomatik Kontrol Bildirimleri</ThemedText>
+                    <ThemedText style={[styles.settingDescription, { color: iconColor }]}>
+                      Aylık olarak deprem çantası kontrolü için bildirim alın
+                    </ThemedText>
+                  </View>
+                </View>
+                <Switch
+                  value={notificationsEnabled}
+                  onValueChange={toggleNotifications}
+                  trackColor={{ false: '#E5E5EA', true: '#34C759' }}
+                  thumbColor={notificationsEnabled ? '#FFFFFF' : '#FFFFFF'}
+                />
+              </View>
+            </View>
             
             {expiredItems.length > 0 && (
               <View style={[styles.alertSection, { backgroundColor: alertBackgroundColor }]}>
@@ -308,5 +373,34 @@ const styles = StyleSheet.create({
   detailText: {
     fontSize: 14,
     marginBottom: 4,
+  },
+  settingsSection: {
+    marginBottom: 16,
+    padding: 16,
+    borderRadius: 12,
+  },
+  settingItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  settingInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  settingTextContainer: {
+    marginLeft: 12,
+    flex: 1,
+  },
+  settingTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  settingDescription: {
+    fontSize: 14,
+    lineHeight: 18,
   },
 });

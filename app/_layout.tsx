@@ -18,8 +18,7 @@ export default function RootLayout() {
   useEffect(() => {
     async function initializeApp() {
       await databaseService.initializeDatabase();
-      await notificationService.requestPermissions();
-      await notificationService.scheduleWeeklyCheck();
+      await notificationService.initializeNotifications();
     }
     
     initializeApp();
