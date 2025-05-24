@@ -9,7 +9,7 @@ import {
 
 import { ThemedText } from '@/components/ThemedText';
 import { useColorScheme } from '@/hooks/useColorScheme';
-import { dateUtils } from '@/services/utils';
+import { dateUtils, translateUnit } from '@/services/utils';
 import { Item, ITEM_CATEGORIES } from '@/types';
 
 interface ItemCardProps {
@@ -123,7 +123,7 @@ export function ItemCard({ item, onToggleCheck, onEdit, onDelete }: ItemCardProp
             color={isDark ? '#A0A0A0' : '#666'} 
           />
           <ThemedText style={styles.quantity}>
-            Miktar: {item.quantity}
+            Miktar: {item.quantity} {translateUnit(item.unit)}
           </ThemedText>
         </View>
         

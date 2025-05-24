@@ -88,5 +88,18 @@ export const dateUtils = {
   },
 };
 
+export const unitTranslations = {
+  pcs: 'adet',
+  kg: 'kg',
+  L: 'L',
+  pack: 'paket',
+  box: 'kutu',
+  bottle: 'şişe',
+} as const;
+
+export const translateUnit = (unit: string): string => {
+  return unitTranslations[unit as keyof typeof unitTranslations] || unit;
+};
+
 // Export formatDate as a standalone function for convenience
 export const formatDate = dateUtils.formatDate;

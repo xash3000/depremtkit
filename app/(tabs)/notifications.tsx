@@ -2,7 +2,7 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { databaseService } from '@/services/database';
-import { formatDate } from '@/services/utils';
+import { formatDate, translateUnit } from '@/services/utils';
 import { Item } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
@@ -117,7 +117,7 @@ export default function NotificationsScreen() {
 
         <View style={[styles.itemDetails, { borderTopColor: borderColor }]}>
           <ThemedText style={[styles.detailText, { color: iconColor }]}>
-            Miktar: {item.quantity} {item.unit}
+            Miktar: {item.quantity} {translateUnit(item.unit)}
           </ThemedText>
           <ThemedText style={[styles.detailText, { color: iconColor }]}>
             Son Kullanma: {formatDate(item.expirationDate!)}
