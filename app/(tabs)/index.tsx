@@ -135,8 +135,13 @@ export default function MyBagScreen() {
         style={[styles.addButton, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
         onPress={() => setShowAddModal(true)}
       >
-        <MaterialIcons name="add" size={24} color="white" />
-        <Text style={styles.addButtonText}>İlk Eşyayı Ekle</Text>
+        <MaterialIcons name="add" size={24} color={colorScheme === 'dark' ? 'black' : 'white'} />
+        <Text style={[
+          styles.addButtonText,
+          { color: colorScheme === 'dark' ? "#000" : "#fff"} 
+        ]}>
+          İlk Eşyayı Ekle
+        </Text>
       </TouchableOpacity>
     </View>
   );
@@ -181,7 +186,7 @@ export default function MyBagScreen() {
           style={[styles.fab, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
           onPress={() => setShowAddModal(true)}
         >
-          <MaterialIcons name="add" size={28} color="white" />
+          <MaterialIcons name="add" size={28} color={colorScheme === 'light' ? 'white' : 'black'} />
         </TouchableOpacity>
       )}
 
