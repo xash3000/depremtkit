@@ -11,8 +11,14 @@
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
-        "UIBackgroundModes": ["background-fetch", "remote-notification"]
-      }
+        "UIBackgroundModes": [
+          "background-fetch",
+          "remote-notification",
+          "background-fetch",
+          "remote-notification"
+        ]
+      },
+      "bundleIdentifier": "com.anonymous.depremkit"
     },
     "android": {
       "adaptiveIcon": {
@@ -21,7 +27,11 @@
       },
       "edgeToEdgeEnabled": true,
       "package": "com.anonymous.depremkit",
-      "permissions": ["RECEIVE_BOOT_COMPLETED", "VIBRATE", "WAKE_LOCK"]
+      "permissions": [
+        "RECEIVE_BOOT_COMPLETED",
+        "VIBRATE",
+        "WAKE_LOCK"
+      ]
     },
     "web": {
       "bundler": "metro",
@@ -42,7 +52,7 @@
       [
         "expo-notifications",
         {
-          "icon": "./assets/images/icon.png",
+          "icon": "./assets/images/welcome.png",
           "color": "#ffffff",
           "defaultChannel": "default"
         }
