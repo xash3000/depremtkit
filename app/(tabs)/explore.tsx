@@ -125,10 +125,10 @@ export default function CategoriesScreen() {
         style={styles.emptyIcon}
       />
       <ThemedText style={styles.emptyTitle}>
-        {selectedCategory.name} Eşyası Yok
+        {selectedCategory.name} Yok
       </ThemedText>
       <ThemedText style={styles.emptySubtitle}>
-        Bu kategoriye eşya ekleyerek burada görmek için
+       Bu kategoride görmek istediğiniz eşyaları ekleyebilirsiniz
       </ThemedText>
       <TouchableOpacity
         style={[styles.addButton, { 
@@ -139,23 +139,23 @@ export default function CategoriesScreen() {
         onPress={() => setShowAddModal(true)}
       >
         <MaterialIcons name="add" size={24} color={selectedCategory.color} />
-        <Text style={[styles.addButtonText, { color: selectedCategory.color }]}>Eşya Ekle</Text>
+        <Text style={[styles.addButtonText, { color: selectedCategory.color }]}>Ekle</Text>
       </TouchableOpacity>
     </View>
   );
 
   const getRecommendations = (category: ItemCategory) => {
-    const recommendations: { [key: string]: string[] } = {
-      water: ['Su şişeleri (kişi başı günde 1 galon)', 'Su arıtma tabletleri', 'Taşınabilir su filtresi'],
-      food: ['Konserve gıdalar', 'Enerji barları', 'Kuru meyve ve kuruyemiş', 'Bebek maması (gerekirse)'],
-      medical: ['İlk yardım çantası', 'Reçeteli ilaçlar', 'Ağrı kesiciler', 'Bandaj', 'Antiseptik'],
-      tools: ['El feneri', 'Pilli radyo', 'Çok amaçlı alet', 'Kibrit/çakmak', 'Koli bandı'],
-      clothing: ['Yedek giysiler', 'Yağmurluk', 'Sıcak battaniye', 'Sağlam ayakkabı'],
-      documents: ['Kimlik kopyaları', 'Sigorta evrakları', 'Nakit para', 'Acil durum iletişim listesi'],
-      communication: ['Cep telefonu şarjı', 'Güç kaynağı', 'Acil durum radyosu', 'Düdük'],
-      hygiene: ['Diş fırçası/macunu', 'Sabun', 'Tuvalet kağıdı', 'Kadın hijyen ürünleri'],
-      other: ['Çöp torbaları', 'Plastik örtü', 'Yerel haritalar', 'Yangın söndürücü'],
-    };
+  const recommendations: { [key: string]: string[] } = {
+    water: ['Su şişesi (en az 2L kişi başı)', 'Taşınabilir su filtresi'],
+    food: ['Konserve gıdalar', 'Enerji barları', 'Kuru meyve ve kuruyemiş'],
+    medical: ['İlk yardım çantası', 'Reçeteli ilaçlar', 'Ağrı kesiciler', 'Bandaj'],
+    tools: ['Düdük','El feneri ve yedek piller', 'Çok amaçlı alet'],
+    clothing: ['Yağmurluk', 'Sıcak battaniye'],
+    documents: ['Kimlik fotokopisi', 'Nakit para', 'Acil durum iletişim numaraları'],
+    communication: ['Cep telefonu şarji', 'Pilli radyo'],
+    hygiene: ['Islak mendil', 'Tuvalet kağıdı', 'El dezenfektanı'],
+    other: ['Power bank', 'Toz maskesi']
+  };
     
     return recommendations[category.id] || [];
   };

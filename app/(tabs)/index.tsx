@@ -127,9 +127,9 @@ export default function MyBagScreen() {
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
       <MaterialIcons name="backpack" size={80} color={Colors[colorScheme ?? 'light'].tabIconDefault} />
-      <ThemedText style={styles.emptyTitle}>Acil Durum Çantan Boş</ThemedText>
+      <ThemedText style={styles.emptyTitle}>Çanta Boş</ThemedText>
       <ThemedText style={styles.emptySubtitle}>
-        Temel eşyaları ekleyerek deprem hazırlık kitini oluşturmaya başla
+        Temel deprem hazırlık eşyalarını ekle
       </ThemedText>
       <TouchableOpacity
         style={[styles.addButton, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
@@ -140,7 +140,7 @@ export default function MyBagScreen() {
           styles.addButtonText,
           { color: colorScheme === 'dark' ? "#000" : "#fff"} 
         ]}>
-          İlk Eşyayı Ekle
+          Ekle
         </Text>
       </TouchableOpacity>
     </View>
