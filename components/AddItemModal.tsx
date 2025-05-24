@@ -17,6 +17,8 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { dateUtils } from '@/services/utils';
 import { Item, ITEM_CATEGORIES, ItemCategory } from '@/types';
+import DateTimePicker from '@react-native-community/datetimepicker';
+
 
 interface AddItemModalProps {
   visible: boolean;
@@ -36,6 +38,7 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
   const [expirationDate, setExpirationDate] = useState('');
   const [notes, setNotes] = useState('');
   const [isChecked, setIsChecked] = useState(false);
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     if (editingItem) {
@@ -123,6 +126,13 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
       </ScrollView>
     </View>
   );
+
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      setExpirationDate(dateUtils.formatDateForInput(selectedDate.toISOString()));
+    }
+  };
 
   return (
     <Modal
@@ -269,20 +279,51 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
           {/* Expiration Date */}
           <View style={styles.section}>
             <ThemedText style={styles.label}>Son Kullanma Tarihi (İsteğe Bağlı)</ThemedText>
-            <TextInput
-              style={[
-                styles.input,
-                {
-                  backgroundColor: isDark ? '#2C2C2E' : '#FFF',
-                  borderColor: isDark ? '#3C3C3E' : '#E1E1E1',
-                  color: isDark ? '#FFF' : '#000',
-                }
-              ]}
-              value={expirationDate}
-              onChangeText={setExpirationDate}
-              placeholder="YYYY-MM-DD"
-              placeholderTextColor={isDark ? '#8E8E93' : '#8E8E93'}
-            />
+            <TouchableOpacity
+              onPress={() => setShowDatePicker(true)}
+              activeOpacity={0.7}
+            >
+              <View pointerEvents="none">
+                <TextInput
+                  style={[
+                    styles.input,
+                    {
+                      backgroundColor: isDark ? '#2C2C2E' : '#FFF',
+                      borderColor: isDark ? '#3C3C3E' : '#E1E1E1',
+                      color: isDark ? '#FFF' : '#000',
+                    }
+                  ]}
+                  value={expirationDate}
+                  placeholder="YYYY-MM-DD"
+                  placeholderTextColor={isDark ? '#8E8E93' : '#8E8E93'}
+                  editable={false}
+                />
+              </View>
+            </TouchableOpacity>
+            {showDatePicker && (
+              <View
+                style={{
+                  position: 'absolute',
+                  left: 0,
+                  right: 0,
+                  top: 0,
+                  bottom: 0,
+                  backgroundColor: isDark ? 'rgba(0,0,0,0.7)' : 'rgba(255,255,255,0.7)',
+                  justifyContent: 'center',
+                  alignItems: 'center',
+                  zIndex: 10,
+                }}
+              >
+                <DateTimePicker
+                  value={expirationDate ? new Date(expirationDate) : new Date()}
+                  mode="date"
+                  display="default"
+                  onChange={handleDateChange}
+                  maximumDate={new Date(2100, 11, 31)}
+                  themeVariant={isDark ? "dark" : "light"}
+                />
+              </View>
+            )}
           </View>
 
           {/* Notes */}
