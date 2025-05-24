@@ -1,26 +1,78 @@
+import { ThemedText } from '@/components/ThemedText';
+import { ThemedView } from '@/components/ThemedView';
+import { useThemeColor } from '@/hooks/useThemeColor';
 import { databaseService } from '@/services/database';
-import { formatDate } from '@/services/utils';
+import { formatDate, notificationService, translateUnit } from '@/services/utils';
 import { Item } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import {
-  Alert,
-  FlatList,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Alert,
+    FlatList,
+    RefreshControl,
+    StyleSheet,
+    Switch,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 
 export default function NotificationsScreen() {
+  const iconColor = useThemeColor({}, 'icon');
+  const cardBackgroundColor = useThemeColor({ light: '#FFFFFF', dark: '#1C1C1E' }, 'background');
+  const borderColor = useThemeColor({ light: '#E5E5EA', dark: '#3A3A3C' }, 'text');
+  const secondaryBackgroundColor = useThemeColor({ light: '#F2F2F7', dark: '#000000' }, 'background');
+  const alertBackgroundColor = useThemeColor({ light: '#F8F9FA', dark: '#2C2C2E' }, 'background');
+  
   const [expiredItems, setExpiredItems] = useState<Item[]>([]);
   const [expiringSoonItems, setExpiringSoonItems] = useState<Item[]>([]);
   const [refreshing, setRefreshing] = useState(false);
+  const [notificationsEnabled, setNotificationsEnabled] = useState(false);
 
   useEffect(() => {
     loadNotifications();
+    checkNotificationStatus();
   }, []);
+
+  const checkNotificationStatus = async () => {
+    try {
+      // You can add logic here to check if notifications are currently scheduled
+      // For now, we'll assume they're enabled if the app has permission
+      const hasPermission = await notificationService.requestPermissions();
+      setNotificationsEnabled(hasPermission);
+    } catch (error) {
+      console.error('Error checking notification status:', error);
+    }
+  };
+
+  const toggleNotifications = async (enabled: boolean) => {
+    try {
+      if (enabled) {
+        const success = await notificationService.initializeNotifications();
+        if (success) {
+          setNotificationsEnabled(true);
+          Alert.alert(
+            '✅ Bildirimler Aktifleştirildi',
+            'Aylık deprem çantası kontrol bildirimleri başlatıldı.'
+          );
+        } else {
+          Alert.alert(
+            'Hata',
+            'Bildirimler aktifleştirilemedi. Lütfen uygulama ayarlarından bildirim iznini kontrol edin.'
+          );
+        }
+      } else {
+        await notificationService.stopMonthlyCheck();
+        setNotificationsEnabled(false);
+        Alert.alert(
+          '🔕 Bildirimler Devre Dışı',
+          'Deprem çantası kontrol bildirimleri durduruldu.'
+        );
+      }
+    } catch (error) {
+      console.error('Error toggling notifications:', error);
+      Alert.alert('Hata', 'Bildirim ayarları değiştirilemedi.');
+    }
+  };
 
   const loadNotifications = async () => {
     try {
@@ -80,11 +132,11 @@ export default function NotificationsScreen() {
     const expStatus = getExpirationStatus(item.expirationDate!);
 
     return (
-      <View style={styles.notificationCard}>
+      <ThemedView style={[styles.notificationCard, { backgroundColor: cardBackgroundColor }]}>
         <View style={styles.cardHeader}>
           <View style={styles.itemInfo}>
-            <Text style={styles.itemName}>{item.name}</Text>
-            <Text style={styles.itemCategory}>{item.category}</Text>
+            <ThemedText style={styles.itemName}>{item.name}</ThemedText>
+            <ThemedText style={[styles.itemCategory, { color: iconColor }]}>{item.category}</ThemedText>
           </View>
           <TouchableOpacity
             style={styles.deleteButton}
@@ -94,46 +146,46 @@ export default function NotificationsScreen() {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.expirationInfo}>
+        <View style={[styles.expirationInfo, { backgroundColor: alertBackgroundColor }]}>
           <Ionicons
             name={expStatus.status === 'expired' ? 'alert-circle' : 'warning'}
             size={16}
             color={expStatus.color}
-          />
-          <Text style={[styles.expirationText, { color: expStatus.color }]}>
+                    />
+          <ThemedText style={[styles.expirationText, { color: expStatus.color }]}>
             {expStatus.status === 'expired'
               ? `${expStatus.days} gün önce süresi doldu`
               : `${expStatus.days} gün sonra süresi dolacak`}
-          </Text>
+          </ThemedText>
         </View>
 
-        <View style={styles.itemDetails}>
-          <Text style={styles.detailText}>
-            Miktar: {item.quantity} {item.unit}
-          </Text>
-          <Text style={styles.detailText}>
+        <View style={[styles.itemDetails, { borderTopColor: borderColor }]}>
+          <ThemedText style={[styles.detailText, { color: iconColor }]}>
+            Miktar: {item.quantity} {translateUnit(item.unit)}
+          </ThemedText>
+          <ThemedText style={[styles.detailText, { color: iconColor }]}>
             Son Kullanma: {formatDate(item.expirationDate!)}
-          </Text>
+          </ThemedText>
           {item.notes && (
-            <Text style={styles.detailText} numberOfLines={2}>
+            <ThemedText style={[styles.detailText, { color: iconColor }]} numberOfLines={2}>
               Notlar: {item.notes}
-            </Text>
+            </ThemedText>
           )}
         </View>
-      </View>
+      </ThemedView>
     );
   };
 
   const renderEmptyState = (title: string, message: string, iconName: string) => (
-    <View style={styles.emptyState}>
-      <Ionicons name={iconName as any} size={64} color="#8E8E93" />
-      <Text style={styles.emptyTitle}>{title}</Text>
-      <Text style={styles.emptyMessage}>{message}</Text>
-    </View>
+    <ThemedView style={styles.emptyState}>
+      <Ionicons name={iconName as any} size={64} color={iconColor} />
+      <ThemedText style={styles.emptyTitle}>{title}</ThemedText>
+      <ThemedText style={[styles.emptyMessage, { color: iconColor }]}>{message}</ThemedText>
+    </ThemedView>
   );
 
   return (
-    <View style={styles.container}>
+    <ThemedView style={[styles.container, { backgroundColor: secondaryBackgroundColor }]}>
       <FlatList
         data={[...expiredItems, ...expiringSoonItems]}
         renderItem={renderNotificationItem}
@@ -142,36 +194,57 @@ export default function NotificationsScreen() {
           <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
         }
         ListHeaderComponent={
-          <View style={styles.header}>
-            <Text style={styles.title}>Uyarılar ve Bildirimler</Text>
-            <Text style={styles.subtitle}>
+          <ThemedView style={[styles.header, { backgroundColor: cardBackgroundColor, borderBottomColor: borderColor }]}>
+            <ThemedText style={styles.title}>Uyarılar ve Bildirimler</ThemedText>
+            <ThemedText style={[styles.subtitle, { color: iconColor }]}>
               Dikkat gerektiren eşyalar
-            </Text>
+            </ThemedText>
+            
+            {/* Notification Settings Section */}
+            <View style={[styles.settingsSection, { backgroundColor: alertBackgroundColor }]}>
+              <View style={styles.settingItem}>
+                <View style={styles.settingInfo}>
+                  <Ionicons name="notifications" size={20} color={iconColor} />
+                  <View style={styles.settingTextContainer}>
+                    <ThemedText style={styles.settingTitle}>Otomatik Kontrol Bildirimleri</ThemedText>
+                    <ThemedText style={[styles.settingDescription, { color: iconColor }]}>
+                      Aylık olarak deprem çantası kontrolü için bildirim alın
+                    </ThemedText>
+                  </View>
+                </View>
+                <Switch
+                  value={notificationsEnabled}
+                  onValueChange={toggleNotifications}
+                  trackColor={{ false: '#E5E5EA', true: '#34C759' }}
+                  thumbColor={notificationsEnabled ? '#FFFFFF' : '#FFFFFF'}
+                />
+              </View>
+            </View>
             
             {expiredItems.length > 0 && (
-              <View style={styles.alertSection}>
+              <View style={[styles.alertSection, { backgroundColor: alertBackgroundColor }]}>
                 <View style={styles.alertHeader}>
                   <Ionicons name="alert-circle" size={20} color="#FF3B30" />
-                  <Text style={styles.alertTitle}>Süresi Geçen Eşyalar ({expiredItems.length})</Text>
+                  <ThemedText style={styles.alertTitle}>Süresi Geçen Eşyalar ({expiredItems.length})</ThemedText>
                 </View>
-                <Text style={styles.alertDescription}>
+                <ThemedText style={[styles.alertDescription, { color: iconColor }]}>
                   Bu eşyaların son kullanma tarihi geçmiştir ve hemen değiştirilmelidir.
-                </Text>
+                </ThemedText>
               </View>
             )}
 
             {expiringSoonItems.length > 0 && (
-              <View style={styles.alertSection}>
+              <View style={[styles.alertSection, { backgroundColor: alertBackgroundColor }]}>
                 <View style={styles.alertHeader}>
                   <Ionicons name="warning" size={20} color="#FF9500" />
-                  <Text style={styles.alertTitle}>Yakında Bitecek ({expiringSoonItems.length})</Text>
+                  <ThemedText style={styles.alertTitle}>Yakında Bitecek ({expiringSoonItems.length})</ThemedText>
                 </View>
-                <Text style={styles.alertDescription}>
+                <ThemedText style={[styles.alertDescription, { color: iconColor }]}>
                   Bu eşyaların süresi önümüzdeki 30 gün içinde dolacak. Yakında değiştirmeyi düşünün.
-                </Text>
+                </ThemedText>
               </View>
             )}
-          </View>
+          </ThemedView>
         }
         ListEmptyComponent={renderEmptyState(
           'Her Şey Yolunda!',
@@ -184,36 +257,30 @@ export default function NotificationsScreen() {
             : styles.listContainer
         }
       />
-    </View>
+    </ThemedView>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F2F2F7',
   },
   header: {
     padding: 16,
-    backgroundColor: '#FFFFFF',
     borderBottomWidth: 1,
-    borderBottomColor: '#E5E5EA',
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    color: '#000000',
     marginBottom: 4,
   },
   subtitle: {
     fontSize: 16,
-    color: '#8E8E93',
     marginBottom: 16,
   },
   alertSection: {
     marginBottom: 16,
     padding: 12,
-    backgroundColor: '#F8F9FA',
     borderRadius: 8,
     borderLeftWidth: 4,
     borderLeftColor: '#FF3B30',
@@ -226,12 +293,10 @@ const styles = StyleSheet.create({
   alertTitle: {
     fontSize: 16,
     fontWeight: '600',
-    color: '#000000',
     marginLeft: 8,
   },
   alertDescription: {
     fontSize: 14,
-    color: '#6D6D70',
     lineHeight: 20,
   },
   listContainer: {
@@ -249,18 +314,15 @@ const styles = StyleSheet.create({
   emptyTitle: {
     fontSize: 24,
     fontWeight: 'bold',
-    color: '#000000',
     marginTop: 16,
     marginBottom: 8,
   },
   emptyMessage: {
     fontSize: 16,
-    color: '#8E8E93',
     textAlign: 'center',
     lineHeight: 24,
   },
   notificationCard: {
-    backgroundColor: '#FFFFFF',
     marginHorizontal: 16,
     marginVertical: 6,
     padding: 16,
@@ -283,12 +345,10 @@ const styles = StyleSheet.create({
   itemName: {
     fontSize: 18,
     fontWeight: '600',
-    color: '#000000',
     marginBottom: 2,
   },
   itemCategory: {
     fontSize: 14,
-    color: '#8E8E93',
     textTransform: 'capitalize',
   },
   deleteButton: {
@@ -299,7 +359,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     marginBottom: 12,
     padding: 8,
-    backgroundColor: '#F8F9FA',
     borderRadius: 6,
   },
   expirationText: {
@@ -309,12 +368,39 @@ const styles = StyleSheet.create({
   },
   itemDetails: {
     borderTopWidth: 1,
-    borderTopColor: '#E5E5EA',
     paddingTop: 12,
   },
   detailText: {
     fontSize: 14,
-    color: '#6D6D70',
     marginBottom: 4,
+  },
+  settingsSection: {
+    marginBottom: 16,
+    padding: 16,
+    borderRadius: 12,
+  },
+  settingItem: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 12,
+  },
+  settingInfo: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  settingTextContainer: {
+    marginLeft: 12,
+    flex: 1,
+  },
+  settingTitle: {
+    fontSize: 16,
+    fontWeight: '600',
+    marginBottom: 2,
+  },
+  settingDescription: {
+    fontSize: 14,
+    lineHeight: 18,
   },
 });
