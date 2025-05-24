@@ -4,6 +4,7 @@ import React, { useCallback, useState } from 'react';
 import {
   Alert,
   FlatList,
+  Image,
   RefreshControl,
   StyleSheet,
   Text,
@@ -126,7 +127,11 @@ export default function MyBagScreen() {
 
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
-      <MaterialIcons name="backpack" size={80} color={Colors[colorScheme ?? 'light'].tabIconDefault} />
+      <View style={styles.emptyBackColor}></View>
+      <Image
+  source={require('../../assets/images/sad.png')}
+  style={{ width: 250, height: 250, resizeMode: 'contain',  borderRadius: 175}}
+/>
       <ThemedText style={styles.emptyTitle}>Çanta Boş</ThemedText>
       <ThemedText style={styles.emptySubtitle}>
         Temel deprem hazırlık eşyalarını ekle
@@ -158,11 +163,11 @@ export default function MyBagScreen() {
             <ThemedText style={styles.statLabel}>Toplam Eşya</ThemedText>
           </View>
           <View style={styles.statItem}>
-            <ThemedText style={[styles.statNumber, { color: '#4CAF50' }]}>{stats.checkedItems}</ThemedText>
+            <ThemedText style={[styles.statNumber, { color: '#A8D7F7' }]}>{stats.checkedItems}</ThemedText>
             <ThemedText style={styles.statLabel}>Kontrol Edildi</ThemedText>
           </View>
           <View style={styles.statItem}>
-            <ThemedText style={[styles.statNumber, { color: stats.expiringItems > 0 ? '#FF9800' : '#4CAF50' }]}>
+            <ThemedText style={[styles.statNumber, { color: stats.expiringItems > 0 ? '#A8D7F7' : '#A8D7F7' }]}>
               {stats.expiringItems}
             </ThemedText>
             <ThemedText style={styles.statLabel}>Yakında Bitecek</ThemedText>
@@ -254,7 +259,7 @@ const styles = StyleSheet.create({
     padding: 40,
   },
   emptyTitle: {
-    fontSize: 20,
+    fontSize: 25,
     fontWeight: 'bold',
     marginTop: 20,
     marginBottom: 8,
@@ -294,4 +299,14 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.25,
     shadowRadius: 4,
   },
+  emptyBackColor:{
+    position: 'absolute',
+    zIndex: -1,
+    top: 75,
+    left: 80,
+    backgroundColor: '#A8D7F7',
+    width: 220,
+    height: 220,
+    borderRadius: 175,
+  }
 });
