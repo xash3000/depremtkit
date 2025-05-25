@@ -106,7 +106,7 @@ class GeminiService {
     if (request.hasPets) householdText.push('evcil hayvanlı');
     if (request.hasChronicIllness) householdText.push('kronik hastalık durumu olan');
 
-    const explanation = `AI analizi tamamlandı! ${request.householdSize} kişilik ${householdText.length > 0 ? householdText.join(', ') + ' ' : ''}hane için ${priorityText} özel deprem çantası önerileri oluşturuldu. ${request.livingArea === 'apartment' ? 'Apartman dairesi' : request.livingArea === 'house' ? 'Müstakil ev' : 'Yaşam alanı'} koşulları dikkate alınarak toplam ${adjustedItems.length} farklı eşya önerildi.`;
+    const explanation = `AI analizi tamamlandı! ${request.householdSize} kişilik ${householdText.length > 0 ? householdText.join(', ') + ' ' : ''}ev için ${priorityText} özel deprem çantası önerileri oluşturuldu. ${request.livingArea === 'apartment' ? 'Apartman dairesi' : request.livingArea === 'house' ? 'Müstakil ev' : 'Yaşam alanı'} koşulları dikkate alınarak toplam ${adjustedItems.length} farklı eşya önerildi.`;
 
     return {
       items: adjustedItems,

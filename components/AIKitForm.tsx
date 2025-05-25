@@ -101,12 +101,12 @@ export default function AIKitForm({ onSuccess, onCancel }: AIKitFormProps) {
       </View>
 
       <View style={styles.form}>
-        {/* Hane Bilgileri */}
+        {/* Ev Bilgileri */}
         <View style={styles.section}>
-          <Text style={[styles.sectionTitle, { color: colors.text }]}>Hane Bilgileri</Text>
+          <Text style={[styles.sectionTitle, { color: colors.text }]}>Ev Bilgileri</Text>
           
           <View style={styles.inputGroup}>
-            <Text style={[styles.label, { color: colors.text }]}>Hane Büyüklüğü</Text>
+            <Text style={[styles.label, { color: colors.text }]}>Evde kaç kişi yaşıyor</Text>
             <TextInput
               style={[styles.numberInput, { borderColor: colors.icon, color: colors.text }]}
               value={formData.householdSize.toString()}
@@ -116,7 +116,7 @@ export default function AIKitForm({ onSuccess, onCancel }: AIKitFormProps) {
           </View>
 
           <View style={styles.switchGroup}>
-            <Text style={[styles.label, { color: colors.text }]}>Çocuk var</Text>
+            <Text style={[styles.label, { color: colors.text }]}>Çocuk var mı</Text>
             <Switch
               value={formData.hasChildren}
               onValueChange={(value) => setFormData(prev => ({ ...prev, hasChildren: value }))}
@@ -126,7 +126,7 @@ export default function AIKitForm({ onSuccess, onCancel }: AIKitFormProps) {
           </View>
 
           <View style={styles.switchGroup}>
-            <Text style={[styles.label, { color: colors.text }]}>Evcil hayvan var</Text>
+            <Text style={[styles.label, { color: colors.text }]}>Evcil hayvan var mı</Text>
             <Switch
               value={formData.hasPets}
               onValueChange={(value) => setFormData(prev => ({ ...prev, hasPets: value }))}
@@ -136,7 +136,7 @@ export default function AIKitForm({ onSuccess, onCancel }: AIKitFormProps) {
           </View>
 
           <View style={styles.switchGroup}>
-            <Text style={[styles.label, { color: colors.text }]}>Yaşlı birey var</Text>
+            <Text style={[styles.label, { color: colors.text }]}>Yaşlı birey var mı</Text>
             <Switch
               value={formData.hasElderly}
               onValueChange={(value) => setFormData(prev => ({ ...prev, hasElderly: value }))}
@@ -146,7 +146,7 @@ export default function AIKitForm({ onSuccess, onCancel }: AIKitFormProps) {
           </View>
 
           <View style={styles.switchGroup}>
-            <Text style={[styles.label, { color: colors.text }]}>Kronik hastalık var</Text>
+            <Text style={[styles.label, { color: colors.text }]}>Kronik hastalık var mı</Text>
             <Switch
               value={formData.hasChronicIllness}
               onValueChange={(value) => setFormData(prev => ({ ...prev, hasChronicIllness: value }))}
