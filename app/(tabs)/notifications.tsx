@@ -7,13 +7,14 @@ import { Item } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
 import React, { useEffect, useState } from 'react';
 import {
-    Alert,
-    FlatList,
-    RefreshControl,
-    StyleSheet,
-    Switch,
-    TouchableOpacity,
-    View,
+  Alert,
+  FlatList,
+  Image,
+  RefreshControl,
+  StyleSheet,
+  Switch,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 
 export default function NotificationsScreen() {
@@ -175,13 +176,16 @@ export default function NotificationsScreen() {
       </ThemedView>
     );
   };
-
   const renderEmptyState = (title: string, message: string, iconName: string) => (
-    <ThemedView style={styles.emptyState}>
-      <Ionicons name={iconName as any} size={64} color={iconColor} />
+    <View style={styles.emptyState}>
+      <View style={styles.emptyBackColor}></View>
+      <Image
+        source={require('../../assets/images/welcome.png')}
+        style={{ width: 250, height: 250, resizeMode: 'contain' }}
+      />
       <ThemedText style={styles.emptyTitle}>{title}</ThemedText>
       <ThemedText style={[styles.emptyMessage, { color: iconColor }]}>{message}</ThemedText>
-    </ThemedView>
+    </View>
   );
 
   return (
@@ -266,20 +270,22 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   header: {
-    padding: 16,
+    padding: 20,
+    paddingTop: 40,
     borderBottomWidth: 1,
   },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
-    marginBottom: 4,
+    marginBottom: 2,
+    marginTop: 10,
   },
   subtitle: {
     fontSize: 16,
     marginBottom: 16,
   },
   alertSection: {
-    marginBottom: 16,
+    marginBottom: 10,
     padding: 12,
     borderRadius: 8,
     borderLeftWidth: 4,
@@ -403,4 +409,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 18,
   },
+    emptyBackColor:{
+    position: 'absolute',
+    zIndex: -1,
+    alignSelf: 'center',
+    top: 90, // Adjust as needed for vertical alignment
+    backgroundColor: '#A8D7F7',
+    width: 210,
+    height: 210,
+    borderRadius: 105,
+  }
 });

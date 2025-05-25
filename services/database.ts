@@ -52,7 +52,6 @@ class DatabaseService {
       const result = await this.db.getAllAsync(`
         SELECT * FROM items WHERE category = ? ORDER BY createdAt DESC
       `, [category]);
-      
       return result.map((row: any) => ({
         ...row,
         isChecked: Boolean(row.isChecked),
@@ -230,3 +229,4 @@ class DatabaseService {
 
 export const databaseService = new DatabaseService();
 export { DatabaseService };
+

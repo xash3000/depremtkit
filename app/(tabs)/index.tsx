@@ -130,7 +130,7 @@ export default function MyBagScreen() {
       <View style={styles.emptyBackColor}></View>
       <Image
   source={require('../../assets/images/sad.png')}
-  style={{ width: 250, height: 250, resizeMode: 'contain',  borderRadius: 175}}
+  style={{ width: 240, height: 240, resizeMode: 'contain',  borderRadius: 175}}
 />
       <ThemedText style={styles.emptyTitle}>Çanta Boş</ThemedText>
       <ThemedText style={styles.emptySubtitle}>
@@ -163,11 +163,11 @@ export default function MyBagScreen() {
             <ThemedText style={styles.statLabel}>Toplam Eşya</ThemedText>
           </View>
           <View style={styles.statItem}>
-            <ThemedText style={[styles.statNumber, { color: '#A8D7F7' }]}>{stats.checkedItems}</ThemedText>
+            <ThemedText style={[styles.statNumber, { color: '#449BD5' }]}>{stats.checkedItems}</ThemedText>
             <ThemedText style={styles.statLabel}>Kontrol Edildi</ThemedText>
           </View>
           <View style={styles.statItem}>
-            <ThemedText style={[styles.statNumber, { color: stats.expiringItems > 0 ? '#A8D7F7' : '#A8D7F7' }]}>
+<ThemedText style={[styles.statNumber, { color: '#449BD5' }]}>
               {stats.expiringItems}
             </ThemedText>
             <ThemedText style={styles.statLabel}>Yakında Bitecek</ThemedText>
@@ -302,11 +302,11 @@ const styles = StyleSheet.create({
   emptyBackColor:{
     position: 'absolute',
     zIndex: -1,
-    top: 75,
-    left: 80,
+    alignSelf: 'center',
+    top: 75, // Adjust as needed for vertical alignment
     backgroundColor: '#A8D7F7',
-    width: 220,
-    height: 220,
-    borderRadius: 175,
+    width: 210,
+    height: 210,
+    borderRadius: 105,
   }
 });
