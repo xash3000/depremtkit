@@ -26,10 +26,9 @@ class GeminiService {
     await new Promise(resolve => setTimeout(resolve, 2000 + Math.random() * 2000));
 
     const baseItems = [
-      { name: 'Su (19L)', category: 'water', quantity: 1, unit: 'bidon', expirationDate: '2026-05-25', notes: 'Kişi başı günlük 3L hesabıyla' },
-      { name: 'Konserve Et', category: 'food', quantity: 3, unit: 'kutu', expirationDate: '2027-01-01', notes: 'Protein kaynağı' },
-      { name: 'Kuru Fasulye', category: 'food', quantity: 2, unit: 'paket', expirationDate: '2026-12-01', notes: 'Uzun ömürlü protein' },
-      { name: 'Pirinç', category: 'food', quantity: 2, unit: 'gr', expirationDate: '2026-10-01', notes: 'Temel karbonhidrat' },
+      { name: 'Su', category: 'water', quantity: 2, unit: 'L', expirationDate: '2026-05-25', notes: '' },
+      { name: 'Konserve Et', category: 'food', quantity: 500, unit: 'gr', expirationDate: '2027-01-01', notes: 'Protein kaynağı' },
+      { name: 'Kraker', category: 'food', quantity: 100, unit: 'gr', expirationDate: '2026-10-01', notes: 'Temel karbonhidrat' },
       { name: 'İlk Yardım Çantası', category: 'medical', quantity: 1, unit: 'adet', expirationDate: undefined, notes: 'Temel tıbbi malzemeler' },
       { name: 'Ağrı Kesici', category: 'medical', quantity: 2, unit: 'kutu', expirationDate: '2025-12-01', notes: 'Parasetamol bazlı' },
       { name: 'El Feneri', category: 'tools', quantity: 2, unit: 'adet', expirationDate: undefined, notes: 'LED, su geçirmez' },
