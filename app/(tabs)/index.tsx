@@ -109,6 +109,31 @@ export default function MyBagScreen() {
     );
   };
 
+  const handleDeleteAllItems = async () => {
+    Alert.alert(
+      'Tüm Eşyaları Sil',
+      'Çantandaki tüm eşyaları silmek istediğin emin misin? Bu işlem geri alınamaz.',
+      [
+        { text: 'İptal', style: 'cancel' },
+        {
+          text: 'Tümünü Sil',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await databaseService.deleteAllItems();
+              loadItems();
+              // Trigger notification refresh
+              notificationRefreshService.triggerRefresh();
+            } catch (error) {
+              console.error('Error deleting all items:', error);
+              Alert.alert('Hata', 'Eşyalar silinemedi');
+            }
+          },
+        },
+      ]
+    );
+  };
+
   const toggleItemCheck = async (item: Item) => {
     await handleUpdateItem(item.id!, { isChecked: !item.isChecked });
   };
@@ -196,6 +221,18 @@ export default function MyBagScreen() {
             <ThemedText style={styles.statLabel}>Yakında Bitecek</ThemedText>
           </View>
         </View>
+        
+        {items.length > 0 && (
+          <TouchableOpacity
+            style={[styles.deleteAllButton, { borderColor: '#F44336' }]}
+            onPress={handleDeleteAllItems}
+          >
+            <MaterialIcons name="delete-sweep" size={20} color="#F44336" />
+            <Text style={[styles.deleteAllButtonText, { color: '#F44336' }]}>
+              Tümünü Sil
+            </Text>
+          </TouchableOpacity>
+        )}
       </ThemedView>
 
       {items.length === 0 ? renderEmptyState() : (
@@ -279,6 +316,23 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   aiButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 6,
+  },
+  deleteAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    backgroundColor: 'transparent',
+    marginTop: 16,
+    alignSelf: 'center',
+  },
+  deleteAllButtonText: {
     fontSize: 14,
     fontWeight: '600',
     marginLeft: 6,

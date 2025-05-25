@@ -151,6 +151,17 @@ class DatabaseService {
     }
   }
 
+  async deleteAllItems(): Promise<void> {
+    if (!this.db) throw new Error('Database not initialized');
+    
+    try {
+      await this.db.runAsync('DELETE FROM items');
+    } catch (error) {
+      console.error('Error deleting all items:', error);
+      throw error;
+    }
+  }
+
   async getExpiringItems(daysAhead: number = 7): Promise<Item[]> {
     if (!this.db) throw new Error('Database not initialized');
     
