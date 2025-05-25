@@ -19,7 +19,6 @@ import { dateUtils } from '@/services/utils';
 import { Item, ITEM_CATEGORIES, ItemCategory } from '@/types';
 import DateTimePicker from '@react-native-community/datetimepicker';
 
-
 interface AddItemModalProps {
   visible: boolean;
   onClose: () => void;
@@ -86,6 +85,28 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
     onSave(itemData);
   };
 
+  const getRecommendations = (category: ItemCategory) => {
+    const recommendations: { [key: string]: string[] } = {
+      water: ['Su şişesi (en az 2L kişi başı)', 'Taşınabilir su filtresi'],
+      food: ['Konserve gıdalar', 'Enerji barları', 'Kuru meyve ve kuruyemiş'],
+      medical: ['İlk yardım çantası', 'Reçeteli ilaçlar', 'Ağrı kesiciler', 'Bandaj'],
+      tools: ['Düdük','El feneri ve yedek piller', 'Çok amaçlı alet'],
+      clothing: ['Yağmurluk', 'Sıcak battaniye'],
+      documents: ['Kimlik fotokopisi', 'Nakit para', 'Acil durum iletişim numaraları'],
+      communication: ['Cep telefonu şarji', 'Pilli radyo'],
+      hygiene: ['Islak mendil', 'Tuvalet kağıdı', 'El dezenfektanı'],
+      other: ['Power bank', 'Toz maskesi']
+    };
+    
+    return recommendations[category.id] || [];
+  };
+
+  const recommendations = getRecommendations(selectedCategory);
+
+  const handleRecommendationPress = (recommendation: string) => {
+    setName(recommendation);
+  };
+
   const renderCategorySelector = () => (
     <View style={styles.section}>
       <ThemedText style={styles.label}>Kategori</ThemedText>
@@ -124,6 +145,35 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
           );
         })}
       </ScrollView>
+
+      {/* Recommendations */}
+      {recommendations.length > 0 && (
+        <View style={styles.recommendationsContainer}>
+          <ThemedText style={styles.recommendationsTitle}>Önerilen Eşyalar:</ThemedText>
+          <View style={styles.recommendationsList}>
+            {recommendations.map((rec, index) => (
+              <TouchableOpacity
+                key={index}
+                style={[
+                  styles.recommendationItem,
+                  {
+                    backgroundColor: isDark ? '#2C2C2E' : '#F8F9FA',
+                    borderColor: selectedCategory.color,
+                  }
+                ]}
+                onPress={() => handleRecommendationPress(rec)}
+              >
+                <ThemedText style={[
+                  styles.recommendationText,
+                  { color: selectedCategory.color }
+                ]}>
+                  {rec}
+                </ThemedText>
+              </TouchableOpacity>
+            ))}
+          </View>
+        </View>
+      )}
     </View>
   );
 
@@ -495,5 +545,30 @@ const styles = StyleSheet.create({
   },
   checkboxLabel: {
     fontSize: 16,
+  },
+  recommendationsContainer: {
+    marginTop: 16,
+  },
+  recommendationsTitle: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginBottom: 8,
+    opacity: 0.8,
+  },
+  recommendationsList: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: 8,
+  },
+  recommendationItem: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 16,
+    borderWidth: 1,
+    marginBottom: 4,
+  },
+  recommendationText: {
+    fontSize: 12,
+    fontWeight: '500',
   },
 });
