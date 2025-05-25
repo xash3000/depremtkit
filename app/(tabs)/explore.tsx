@@ -17,6 +17,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { databaseService } from '@/services/database';
+import { notificationRefreshService } from '@/services/notificationRefresh';
 import { Item, ITEM_CATEGORIES, ItemCategory } from '@/types';
 
 export default function CategoriesScreen() {
@@ -51,6 +52,8 @@ export default function CategoriesScreen() {
       await databaseService.addItem({ ...itemData, category: selectedCategory.id });
       loadItemsForCategory(selectedCategory);
       setShowAddModal(false);
+      // Trigger notification refresh
+      notificationRefreshService.triggerRefresh();
     } catch (error) {
       console.error('Error adding item:', error);
     }
@@ -61,6 +64,10 @@ export default function CategoriesScreen() {
       await databaseService.updateItem(id, updates);
       loadItemsForCategory(selectedCategory);
       setEditingItem(null);
+      // Trigger notification refresh if expiration date might have changed
+      if (updates.expirationDate !== undefined) {
+        notificationRefreshService.triggerRefresh();
+      }
     } catch (error) {
       console.error('Error updating item:', error);
     }
@@ -70,6 +77,8 @@ export default function CategoriesScreen() {
     try {
       await databaseService.deleteItem(id);
       loadItemsForCategory(selectedCategory);
+      // Trigger notification refresh
+      notificationRefreshService.triggerRefresh();
     } catch (error) {
       console.error('Error deleting item:', error);
     }

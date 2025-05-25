@@ -299,7 +299,7 @@ export function AddItemModal({ visible, onClose, onSave, editingItem }: AddItemM
           <View style={styles.section}>
             <ThemedText style={styles.label}>Birim</ThemedText>
             <View style={styles.unitContainer}>
-            {['adet', 'kg', 'L', 'paket', 'kutu', 'şişe'].map((unitOption, index) => {
+            {['adet', 'gr', 'L', 'paket', 'kutu', 'şişe'].map((unitOption, index) => {
               const originalUnits = ['pcs', 'g', 'L', 'pack', 'box', 'bottle'];
               const originalUnit = originalUnits[index];
               return (

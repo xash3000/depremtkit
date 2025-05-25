@@ -2,10 +2,12 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { databaseService } from '@/services/database';
+import { notificationRefreshService } from '@/services/notificationRefresh';
 import { formatDate, notificationService, translateUnit } from '@/services/utils';
 import { Item } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -32,7 +34,23 @@ export default function NotificationsScreen() {
   useEffect(() => {
     loadNotifications();
     checkNotificationStatus();
+
+    // Register for refresh callbacks from other screens
+    const unregister = notificationRefreshService.registerRefreshCallback(() => {
+      loadNotifications();
+    });
+
+    return () => {
+      unregister();
+    };
   }, []);
+
+  // Refresh notifications when the tab is focused
+  useFocusEffect(
+    useCallback(() => {
+      loadNotifications();
+    }, [])
+  );
 
   const checkNotificationStatus = async () => {
     try {
@@ -178,7 +196,7 @@ export default function NotificationsScreen() {
   };
   const renderEmptyState = (title: string, message: string, iconName: string) => (
     <View style={styles.emptyState}>
-      <View style={styles.emptyBackColor}></View>
+      {/* <View style={styles.emptyBackColor}></View> */}
       <Image
         source={require('../../assets/images/welcome.png')}
         style={{ width: 250, height: 250, resizeMode: 'contain' }}
@@ -252,7 +270,7 @@ export default function NotificationsScreen() {
         }
         ListEmptyComponent={renderEmptyState(
           'Her Şey Yolunda!',
-          'Hiçbir eşya acil dikkat gerektirmiyor. Acil durum çantan güncel.',
+          'Hiçbir eşya acil dikkat gerektirmiyor. deprem çantan güncel.',
           'checkmark-circle'
         )}
         contentContainerStyle={
@@ -409,7 +427,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 18,
   },
-    emptyBackColor:{
+  emptyBackColor:{
     position: 'absolute',
     zIndex: -1,
     alignSelf: 'center',

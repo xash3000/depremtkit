@@ -222,7 +222,7 @@ export const dateUtils = {
 
 export const unitTranslations = {
   pcs: 'adet',
-  kg: 'kg',
+  gr: 'gr',
   L: 'L',
   pack: 'paket',
   box: 'kutu',

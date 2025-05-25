@@ -2,14 +2,14 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useState } from 'react';
 import {
-    Alert,
-    FlatList,
-    Image,
-    RefreshControl,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  FlatList,
+  Image,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -18,6 +18,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { databaseService } from '@/services/database';
+import { notificationRefreshService } from '@/services/notificationRefresh';
 import { dateUtils } from '@/services/utils';
 import { Item } from '@/types';
 import { AddItemModal } from '../../components/AddItemModal';
@@ -60,6 +61,8 @@ export default function MyBagScreen() {
       await databaseService.addItem(itemData);
       loadItems();
       setShowAddModal(false);
+      // Trigger notification refresh
+      notificationRefreshService.triggerRefresh();
     } catch (error) {
       console.error('Error adding item:', error);
       Alert.alert('Hata', 'Eşya eklenemedi');
@@ -71,6 +74,10 @@ export default function MyBagScreen() {
       await databaseService.updateItem(id, updates);
       loadItems();
       setEditingItem(null);
+      // Trigger notification refresh if expiration date might have changed
+      if (updates.expirationDate !== undefined) {
+        notificationRefreshService.triggerRefresh();
+      }
     } catch (error) {
       console.error('Error updating item:', error);
       Alert.alert('Hata', 'Eşya güncellenemedi');
@@ -90,9 +97,36 @@ export default function MyBagScreen() {
             try {
               await databaseService.deleteItem(id);
               loadItems();
+              // Trigger notification refresh
+              notificationRefreshService.triggerRefresh();
             } catch (error) {
               console.error('Error deleting item:', error);
               Alert.alert('Hata', 'Eşya silinemedi');
+            }
+          },
+        },
+      ]
+    );
+  };
+
+  const handleDeleteAllItems = async () => {
+    Alert.alert(
+      'Tüm Eşyaları Sil',
+      'Çantandaki tüm eşyaları silmek istediğin emin misin? Bu işlem geri alınamaz.',
+      [
+        { text: 'İptal', style: 'cancel' },
+        {
+          text: 'Tümünü Sil',
+          style: 'destructive',
+          onPress: async () => {
+            try {
+              await databaseService.deleteAllItems();
+              loadItems();
+              // Trigger notification refresh
+              notificationRefreshService.triggerRefresh();
+            } catch (error) {
+              console.error('Error deleting all items:', error);
+              Alert.alert('Hata', 'Eşyalar silinemedi');
             }
           },
         },
@@ -127,14 +161,15 @@ export default function MyBagScreen() {
 
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
-      <View style={styles.emptyBackColor}></View>
+      {/* <View style={styles.emptyBackColor}></View> */}
       <Image
   source={require('../../assets/images/sad.png')}
   style={{ width: 240, height: 240, resizeMode: 'contain',  borderRadius: 175}}
 />
       <ThemedText style={styles.emptyTitle}>Çanta Boş</ThemedText>
       <ThemedText style={styles.emptySubtitle}>
-        Temel deprem hazırlık eşyalarını ekle
+        Depreme hazırlık eşyalarını ekle. 
+        Ürünlerin son kullanım tarihi yaklaştığında sizi bildireceğiz
       </ThemedText>
       <TouchableOpacity
         style={[styles.addButton, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
@@ -156,7 +191,7 @@ export default function MyBagScreen() {
       <ThemedView style={styles.header}>
         <View style={styles.headerTop}>
           <View>
-            <ThemedText style={styles.title}>Acil Durum Çantam</ThemedText>
+            <ThemedText style={styles.title}>Deprem Çantam</ThemedText>
             <ThemedText style={styles.subtitle}>Hazır Ol. Güvende Kal.</ThemedText>
           </View>
           <TouchableOpacity
@@ -186,6 +221,18 @@ export default function MyBagScreen() {
             <ThemedText style={styles.statLabel}>Yakında Bitecek</ThemedText>
           </View>
         </View>
+        
+        {items.length > 0 && (
+          <TouchableOpacity
+            style={[styles.deleteAllButton, { borderColor: '#F44336' }]}
+            onPress={handleDeleteAllItems}
+          >
+            <MaterialIcons name="delete-sweep" size={20} color="#F44336" />
+            <Text style={[styles.deleteAllButtonText, { color: '#F44336' }]}>
+              Tümünü Sil
+            </Text>
+          </TouchableOpacity>
+        )}
       </ThemedView>
 
       {items.length === 0 ? renderEmptyState() : (
@@ -269,6 +316,23 @@ const styles = StyleSheet.create({
     marginTop: 5,
   },
   aiButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 6,
+  },
+  deleteAllButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+    paddingVertical: 12,
+    borderRadius: 12,
+    borderWidth: 1,
+    backgroundColor: 'transparent',
+    marginTop: 16,
+    alignSelf: 'center',
+  },
+  deleteAllButtonText: {
     fontSize: 14,
     fontWeight: '600',
     marginLeft: 6,
