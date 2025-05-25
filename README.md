@@ -1,5 +1,7 @@
 # Deprem Kit - Acil Durum Çantası Uygulaması 🎒
 
+![Welcome](assets/images/welcome.png)
+
 Bu uygulama, deprem ve diğer acil durumlar için hazırlık çantanızı organize etmenize yardımcı olan bir React Native uygulamasıdır. [Expo](https://expo.dev) kullanılarak geliştirilmiştir.
 
 ## Başlangıç
@@ -39,17 +41,3 @@ Bu uygulama, deprem ve diğer acil durumlar için hazırlık çantanızı organi
 - `components/` - Yeniden kullanılabilir UI bileşenleri
 - `services/` - Veritabanı ve bildirim servisleri
 - `types/` - TypeScript tip tanımları
-
-## Expo ile Öğrenme
-
-Expo ile proje geliştirme hakkında daha fazla bilgi için aşağıdaki kaynaklara bakın:
-
-- [Expo dokümantasyonu](https://docs.expo.dev/): Temelleri öğrenin veya [kılavuzlar](https://docs.expo.dev/guides) ile ileri konulara geçin.
-- [Expo öğretici](https://docs.expo.dev/tutorial/introduction/): Android, iOS ve web'de çalışan bir proje oluşturacağınız adım adım öğreticiyi takip edin.
-
-## Topluluk
-
-Evrensel uygulamalar oluşturan geliştirici topluluğumuza katılın.
-
-- [GitHub'da Expo](https://github.com/expo/expo): Açık kaynak platformumuzu görüntüleyin ve katkıda bulunun.
-- [Discord topluluğu](https://chat.expo.dev): Expo kullanıcıları ile sohbet edin ve sorular sorun.
