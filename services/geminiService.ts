@@ -29,7 +29,7 @@ class GeminiService {
       { name: 'Su (19L)', category: 'water', quantity: 1, unit: 'bidon', expirationDate: '2026-05-25', notes: 'Kişi başı günlük 3L hesabıyla' },
       { name: 'Konserve Et', category: 'food', quantity: 3, unit: 'kutu', expirationDate: '2027-01-01', notes: 'Protein kaynağı' },
       { name: 'Kuru Fasulye', category: 'food', quantity: 2, unit: 'paket', expirationDate: '2026-12-01', notes: 'Uzun ömürlü protein' },
-      { name: 'Pirinç', category: 'food', quantity: 2, unit: 'kg', expirationDate: '2026-10-01', notes: 'Temel karbonhidrat' },
+      { name: 'Pirinç', category: 'food', quantity: 2, unit: 'gr', expirationDate: '2026-10-01', notes: 'Temel karbonhidrat' },
       { name: 'İlk Yardım Çantası', category: 'medical', quantity: 1, unit: 'adet', expirationDate: undefined, notes: 'Temel tıbbi malzemeler' },
       { name: 'Ağrı Kesici', category: 'medical', quantity: 2, unit: 'kutu', expirationDate: '2025-12-01', notes: 'Parasetamol bazlı' },
       { name: 'El Feneri', category: 'tools', quantity: 2, unit: 'adet', expirationDate: undefined, notes: 'LED, su geçirmez' },
@@ -52,7 +52,7 @@ class GeminiService {
 
     if (request.hasPets) {
       customItems.push(
-        { name: 'Evcil Hayvan Maması', category: 'food', quantity: 5, unit: 'kg', expirationDate: '2025-09-01', notes: 'Evcil hayvanlar için' },
+        { name: 'Evcil Hayvan Maması', category: 'food', quantity: 5, unit: 'gr', expirationDate: '2025-09-01', notes: 'Evcil hayvanlar için' },
         { name: 'Pet Tasması', category: 'other', quantity: 1, unit: 'adet', expirationDate: undefined, notes: 'Kimlik bilgisi ile' }
       );
     }

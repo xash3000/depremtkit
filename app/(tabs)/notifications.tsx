@@ -178,7 +178,7 @@ export default function NotificationsScreen() {
   };
   const renderEmptyState = (title: string, message: string, iconName: string) => (
     <View style={styles.emptyState}>
-      <View style={styles.emptyBackColor}></View>
+      {/* <View style={styles.emptyBackColor}></View> */}
       <Image
         source={require('../../assets/images/welcome.png')}
         style={{ width: 250, height: 250, resizeMode: 'contain' }}
@@ -252,7 +252,7 @@ export default function NotificationsScreen() {
         }
         ListEmptyComponent={renderEmptyState(
           'Her Şey Yolunda!',
-          'Hiçbir eşya acil dikkat gerektirmiyor. Acil durum çantan güncel.',
+          'Hiçbir eşya acil dikkat gerektirmiyor. deprem çantan güncel.',
           'checkmark-circle'
         )}
         contentContainerStyle={

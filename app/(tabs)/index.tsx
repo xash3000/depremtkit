@@ -2,14 +2,14 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useState } from 'react';
 import {
-    Alert,
-    FlatList,
-    Image,
-    RefreshControl,
-    StyleSheet,
-    Text,
-    TouchableOpacity,
-    View,
+  Alert,
+  FlatList,
+  Image,
+  RefreshControl,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -127,14 +127,15 @@ export default function MyBagScreen() {
 
   const renderEmptyState = () => (
     <View style={styles.emptyState}>
-      <View style={styles.emptyBackColor}></View>
+      {/* <View style={styles.emptyBackColor}></View> */}
       <Image
   source={require('../../assets/images/sad.png')}
   style={{ width: 240, height: 240, resizeMode: 'contain',  borderRadius: 175}}
 />
       <ThemedText style={styles.emptyTitle}>Çanta Boş</ThemedText>
       <ThemedText style={styles.emptySubtitle}>
-        Temel deprem hazırlık eşyalarını ekle
+        Depreme hazırlık eşyalarını ekle. 
+        Ürünlerin son kullanım tarihi yaklaştığında sizi bildireceğiz
       </ThemedText>
       <TouchableOpacity
         style={[styles.addButton, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
@@ -156,7 +157,7 @@ export default function MyBagScreen() {
       <ThemedView style={styles.header}>
         <View style={styles.headerTop}>
           <View>
-            <ThemedText style={styles.title}>Acil Durum Çantam</ThemedText>
+            <ThemedText style={styles.title}>Deprem Çantam</ThemedText>
             <ThemedText style={styles.subtitle}>Hazır Ol. Güvende Kal.</ThemedText>
           </View>
           <TouchableOpacity
