@@ -18,6 +18,7 @@ import { ThemedView } from '@/components/ThemedView';
 import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { databaseService } from '@/services/database';
+import { notificationRefreshService } from '@/services/notificationRefresh';
 import { dateUtils } from '@/services/utils';
 import { Item } from '@/types';
 import { AddItemModal } from '../../components/AddItemModal';
@@ -60,6 +61,8 @@ export default function MyBagScreen() {
       await databaseService.addItem(itemData);
       loadItems();
       setShowAddModal(false);
+      // Trigger notification refresh
+      notificationRefreshService.triggerRefresh();
     } catch (error) {
       console.error('Error adding item:', error);
       Alert.alert('Hata', 'Eşya eklenemedi');
@@ -71,6 +74,10 @@ export default function MyBagScreen() {
       await databaseService.updateItem(id, updates);
       loadItems();
       setEditingItem(null);
+      // Trigger notification refresh if expiration date might have changed
+      if (updates.expirationDate !== undefined) {
+        notificationRefreshService.triggerRefresh();
+      }
     } catch (error) {
       console.error('Error updating item:', error);
       Alert.alert('Hata', 'Eşya güncellenemedi');
@@ -90,6 +97,8 @@ export default function MyBagScreen() {
             try {
               await databaseService.deleteItem(id);
               loadItems();
+              // Trigger notification refresh
+              notificationRefreshService.triggerRefresh();
             } catch (error) {
               console.error('Error deleting item:', error);
               Alert.alert('Hata', 'Eşya silinemedi');

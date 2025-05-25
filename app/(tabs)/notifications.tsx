@@ -2,10 +2,12 @@ import { ThemedText } from '@/components/ThemedText';
 import { ThemedView } from '@/components/ThemedView';
 import { useThemeColor } from '@/hooks/useThemeColor';
 import { databaseService } from '@/services/database';
+import { notificationRefreshService } from '@/services/notificationRefresh';
 import { formatDate, notificationService, translateUnit } from '@/services/utils';
 import { Item } from '@/types';
 import { Ionicons } from '@expo/vector-icons';
-import React, { useEffect, useState } from 'react';
+import { useFocusEffect } from '@react-navigation/native';
+import React, { useCallback, useEffect, useState } from 'react';
 import {
   Alert,
   FlatList,
@@ -32,7 +34,23 @@ export default function NotificationsScreen() {
   useEffect(() => {
     loadNotifications();
     checkNotificationStatus();
+
+    // Register for refresh callbacks from other screens
+    const unregister = notificationRefreshService.registerRefreshCallback(() => {
+      loadNotifications();
+    });
+
+    return () => {
+      unregister();
+    };
   }, []);
+
+  // Refresh notifications when the tab is focused
+  useFocusEffect(
+    useCallback(() => {
+      loadNotifications();
+    }, [])
+  );
 
   const checkNotificationStatus = async () => {
     try {

@@ -2,6 +2,7 @@ import { Colors } from '@/constants/Colors';
 import { useColorScheme } from '@/hooks/useColorScheme';
 import { databaseService } from '@/services/database';
 import { AIKitRequest, geminiService } from '@/services/geminiService';
+import { notificationRefreshService } from '@/services/notificationRefresh';
 import { ITEM_CATEGORIES } from '@/types';
 import { MaterialIcons } from '@expo/vector-icons';
 import React, { useState } from 'react';
@@ -80,7 +81,11 @@ export default function AIKitForm({ onSuccess, onCancel }: AIKitFormProps) {
         [
           {
             text: 'Tamam',
-            onPress: onSuccess,
+            onPress: () => {
+              // Trigger notification refresh since items were added
+              notificationRefreshService.triggerRefresh();
+              onSuccess();
+            },
           },
         ]
       );
