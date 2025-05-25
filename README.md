@@ -1,6 +1,8 @@
-# Deprem Kit - Acil Durum Çantası Uygulaması 🎒
+<div align="center">
+  <img src="assets/images/readme.png" alt="Welcome" />
+</div>
 
-![Welcome](assets/images/readme.png)
+# Deprem Kit - Acil Durum Çantası Uygulaması 🎒
 
 Bu uygulama, deprem ve diğer acil durumlar için hazırlık çantanızı organize etmenize yardımcı olan bir React Native uygulamasıdır. [Expo](https://expo.dev) kullanılarak geliştirilmiştir.
 
