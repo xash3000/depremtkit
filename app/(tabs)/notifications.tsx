@@ -427,7 +427,7 @@ const styles = StyleSheet.create({
     fontSize: 14,
     lineHeight: 18,
   },
-    emptyBackColor:{
+  emptyBackColor:{
     position: 'absolute',
     zIndex: -1,
     alignSelf: 'center',
