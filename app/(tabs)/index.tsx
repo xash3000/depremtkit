@@ -2,14 +2,14 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { useFocusEffect } from '@react-navigation/native';
 import React, { useCallback, useState } from 'react';
 import {
-  Alert,
-  FlatList,
-  Image,
-  RefreshControl,
-  StyleSheet,
-  Text,
-  TouchableOpacity,
-  View,
+    Alert,
+    FlatList,
+    Image,
+    RefreshControl,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -21,14 +21,15 @@ import { databaseService } from '@/services/database';
 import { dateUtils } from '@/services/utils';
 import { Item } from '@/types';
 import { AddItemModal } from '../../components/AddItemModal';
+import AIKitModal from '../../components/AIKitModal';
 import { ItemCard } from '../../components/ItemCard';
 
 export default function MyBagScreen() {
   const colorScheme = useColorScheme();
   const [items, setItems] = useState<Item[]>([]);
-  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [showAddModal, setShowAddModal] = useState(false);
+  const [showAIModal, setShowAIModal] = useState(false);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
 
   const loadItems = async () => {
@@ -39,7 +40,6 @@ export default function MyBagScreen() {
       console.error('Error loading items:', error);
       Alert.alert('Hata', 'Eşyalar yüklenemedi');
     } finally {
-      setLoading(false);
       setRefreshing(false);
     }
   };
@@ -154,8 +154,21 @@ export default function MyBagScreen() {
   return (
     <SafeAreaView style={[styles.container, { backgroundColor: Colors[colorScheme ?? 'light'].background }]}>
       <ThemedView style={styles.header}>
-        <ThemedText style={styles.title}>Acil Durum Çantam</ThemedText>
-        <ThemedText style={styles.subtitle}>Hazır Ol. Güvende Kal.</ThemedText>
+        <View style={styles.headerTop}>
+          <View>
+            <ThemedText style={styles.title}>Acil Durum Çantam</ThemedText>
+            <ThemedText style={styles.subtitle}>Hazır Ol. Güvende Kal.</ThemedText>
+          </View>
+          <TouchableOpacity
+            style={[styles.aiButton, { backgroundColor: Colors[colorScheme ?? 'light'].tint }]}
+            onPress={() => setShowAIModal(true)}
+          >
+            <MaterialIcons name="auto-awesome" size={20} color={colorScheme === 'light' ? 'white' : 'black'} />
+            <Text style={[styles.aiButtonText, { color: colorScheme === 'light' ? 'white' : 'black' }]}>
+              AI Kit
+            </Text>
+          </TouchableOpacity>
+        </View>
         
         <View style={styles.statsContainer}>
           <View style={styles.statItem}>
@@ -207,6 +220,19 @@ export default function MyBagScreen() {
         }
         editingItem={editingItem}
       />
+
+      <AIKitModal
+        visible={showAIModal}
+        onClose={() => setShowAIModal(false)}
+        onSuccess={() => {
+          loadItems();
+          Alert.alert(
+            'Başarılı!',
+            'AI önerileri çantanıza eklendi. Eşyaları görüntülemek ve son kullanma tarihlerini düzenlemek için liste üzerinde çalışabilirsiniz.',
+            [{ text: 'Tamam' }]
+          );
+        }}
+      />
     </SafeAreaView>
   );
 }
@@ -219,6 +245,12 @@ const styles = StyleSheet.create({
     padding: 20,
     paddingBottom: 10,
   },
+  headerTop: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    marginBottom: 20,
+  },
   title: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -227,7 +259,19 @@ const styles = StyleSheet.create({
   subtitle: {
     fontSize: 16,
     opacity: 0.7,
-    marginBottom: 20,
+  },
+  aiButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingHorizontal: 16,
+    paddingVertical: 10,
+    borderRadius: 20,
+    marginTop: 5,
+  },
+  aiButtonText: {
+    fontSize: 14,
+    fontWeight: '600',
+    marginLeft: 6,
   },
   statsContainer: {
     flexDirection: 'row',

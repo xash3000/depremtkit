@@ -34,6 +34,13 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
+        name="ai-kit"
+        options={{
+          title: 'AI Kit',
+          tabBarIcon: ({ color }) => <MaterialIcons size={28} name="auto-awesome" color={color} />,
+        }}
+      />
+      <Tabs.Screen
         name="explore"
         options={{
           title: 'Kategoriler',
