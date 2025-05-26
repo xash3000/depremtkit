@@ -2,9 +2,9 @@
   <img src="assets/images/readme.png" alt="Welcome" />
 </div>
 
-# Earthquake Kit - Emergency Bag Application 🎒
+# DepremKit - Emergency Bag Application 🎒
 
-This application is a React Native app that helps you organize your emergency preparedness bag for earthquakes and other emergencies
+A React Native app that helps you organize your emergency preparedness bag for earthquakes and other emergencies
 
 <div align="center">
    <img src="screenshots/screenshot-collage.png">
