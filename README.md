@@ -2,44 +2,42 @@
   <img src="assets/images/readme.png" alt="Welcome" />
 </div>
 
-# Deprem Kit - Acil Durum Çantası Uygulaması 🎒
+# Earthquake Kit - Emergency Bag Application 🎒
 
-Bu uygulama, deprem ve diğer acil durumlar için hazırlık çantanızı organize etmenize yardımcı olan bir React Native uygulamasıdır. [Expo](https://expo.dev) kullanılarak geliştirilmiştir.
+This application is a React Native app that helps you organize your emergency preparedness bag for earthquakes and other emergencies
 
-## Başlangıç
+<div align="center">
+   <img src="screenshots/screenshot-collage.png">
+</div>
 
-1. Bağımlılıkları yükleyin
+## Features
+
+- ✅ Organize emergency items by categories
+- 📅 Track expiration dates
+- 🔔 Notifications for items that are expiring/expired
+- 📊 Bag status statistics
+- 🌙 Dark/light theme support
+
+## Run the app 
+
+1. Install dependencies
 
    ```bash
    npm install
    ```
 
-2. Uygulamayı başlatın
+2. Start the application
 
    ```bash
    npx expo start
    ```
 
-Çıktıda, uygulamayı açmak için aşağıdaki seçenekleri bulacaksınız:
+In the output, you'll find options to open the app:
 
 - [Development build](https://docs.expo.dev/develop/development-builds/introduction/)
-- [Android emülatör](https://docs.expo.dev/workflow/android-studio-emulator/)
-- [iOS simülatör](https://docs.expo.dev/workflow/ios-simulator/)
-- [Expo Go](https://expo.dev/go), Expo ile uygulama geliştirmeyi denemek için sınırlı bir sandbox
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-**app** dizinindeki dosyaları düzenleyerek geliştirmeye başlayabilirsiniz. Bu proje [dosya tabanlı yönlendirme](https://docs.expo.dev/router/introduction) kullanır.
+You can start developing by editing the files in the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-## Özellikler
-
-- ✅ Acil durum eşyalarını kategorilere göre organize etme
-- 📅 Son kullanma tarihlerini takip etme
-- 🔔 Süresi yaklaşan/geçen eşyalar için uyarılar
-- 📊 Çanta durumu istatistikleri
-- 🌙 Koyu/açık tema desteği
-
-## Proje Yapısı
-
-- `app/` - Ana uygulama sayfaları (tabs: Çantam, Kategoriler, Uyarılar)
-- `components/` - Yeniden kullanılabilir UI bileşenleri
-- `services/` - Veritabanı ve bildirim servisleri
-- `types/` - TypeScript tip tanımları
